@@ -1,0 +1,1402 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Verify Before You Assist</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap">
+<style>
+/* Layout: "floating dock on marble". One lesson at a time, centered on infinite white; a glass dock at the bottom navigates.
+   Deliberately single-theme (light), per the Sleeve system. */
+:root{
+  --ink:#000000; --graphite:#333333; --slate:#374151; --mist:#e5e7eb; --ash:#cccccc; --smoke:#999999;
+  --white:#ffffff; --paper:#f9fafb; --blue:#0e95ee; --cyan:#27c9f5;
+  --ocean:linear-gradient(to right top,#0e95ee,#27c9f5);
+  --splash:linear-gradient(to right bottom,rgba(150,255,238,.18),rgba(24,192,233,.14));
+  --ok:#12b76a; --ok-ink:#05603a; --ok-soft:#ecfdf3; --bad:#f04438; --bad-ink:#b42318; --bad-soft:#fef3f2;
+  --sh-inset:rgba(0,0,0,.05) 0 0 0 1px inset;
+  --sh-btn:rgba(0,0,0,.1) 0 1px 3px 0,rgba(0,0,0,.1) 0 1px 2px -1px;
+  --sh-sm:rgba(0,0,0,.1) 0 4px 6px -1px,rgba(0,0,0,.1) 0 2px 4px -2px;
+  --sh-md:rgba(0,0,0,.1) 0 10px 15px -3px,rgba(0,0,0,.1) 0 4px 6px -4px;
+  --sh-xl:rgba(0,0,0,.05) 0 20px 25px -5px,rgba(0,0,0,.05) 0 8px 10px -6px;
+  --sh-elev:rgba(0,0,0,.1) 0 0 0 1px,rgba(0,0,0,.25) 0 12px 24px -8px,rgba(0,0,0,.12) 0 8px 24px 0,rgba(0,0,0,.1) 0 2px 4px 0;
+  --font:'Inter',ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{background:var(--white);color:var(--ink);font-family:var(--font);font-size:16px;line-height:24px;font-feature-settings:'ss01' on,'cv11' on;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{text-wrap:balance}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+b{font-weight:600}
+
+/* Tones for app-icon tiles (decorative satellites) */
+.t-blue{background:linear-gradient(to right top,#0e95ee,#27c9f5)}
+.t-purple{background:linear-gradient(135deg,#c084fc,#6366f1)}
+.t-sky{background:linear-gradient(135deg,#38bdf8,#2563eb)}
+.t-orange{background:linear-gradient(135deg,#fdba74,#f97316)}
+.t-pink{background:linear-gradient(135deg,#fb7185,#e11d74)}
+.t-teal{background:linear-gradient(135deg,#5eead4,#0d9488)}
+.t-amber{background:linear-gradient(135deg,#fcd34d,#f97316)}
+.t-green{background:linear-gradient(135deg,#86efac,#16a34a)}
+.t-indigo{background:linear-gradient(135deg,#818cf8,#0ea5e9)}
+.t-gray{background:linear-gradient(135deg,#d1d5db,#6b7280)}
+.t-ink{background:linear-gradient(135deg,#4b5563,#000000)}
+.tile{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:#fff;box-shadow:var(--sh-md);flex:none}
+.tile .ic{width:24px;height:24px}
+.tile.sm{width:36px;height:36px;border-radius:11px}
+.tile.sm .ic{width:18px;height:18px}
+
+/* Page */
+.page{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 160px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;height:72px}
+.wordmark{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;letter-spacing:.05em;color:var(--blue)}
+.now{display:flex;align-items:center;gap:8px;min-width:0;background:var(--paper);border:1px solid var(--mist);border-radius:9999px;padding:6px 16px;font-size:14px;color:var(--graphite)}
+.now span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.now .dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:none}
+.pts{display:flex;align-items:center;gap:6px;background:var(--ink);color:#fff;border-radius:9999px;padding:6px 14px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;flex:none}
+.pts .ic{width:14px;height:14px}
+.pts.bump{animation:bump .6s cubic-bezier(.3,1.8,.5,1)}
+
+/* Lesson */
+.lesson{display:flex;flex-direction:column;align-items:center;gap:48px;padding-top:40px}
+.lesson.enter > *{animation:rise .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 90ms)}
+.intro{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;max-width:760px}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--blue)}
+.h{font-size:48px;line-height:52px;letter-spacing:-1.2px;font-weight:700}
+.sub{font-size:18px;line-height:26px;color:var(--graphite);max-width:58ch}
+.card{width:100%;background:#fff;border:1px solid var(--mist);border-radius:24px;padding:36px;display:flex;flex-direction:column;gap:24px;min-width:0}
+.act-head{display:flex;align-items:center;gap:16px}
+.act-head > div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.act-head h3{font-size:24px;line-height:32px;font-weight:700}
+.act-head .eyebrow{font-size:12px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.center{justify-content:center}
+.mini-lbl{font-size:12px;line-height:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--smoke);font-weight:600}
+.muted{color:var(--graphite)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:9999px;border:1px solid transparent;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,opacity .18s}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:var(--sh-md)}
+.btn.outline{background:#fff;border-color:var(--mist);color:var(--ink)}
+.btn.outline:hover:not(:disabled){border-color:var(--ash);transform:translateY(-1px);box-shadow:var(--sh-btn)}
+.btn.sm{height:38px;padding:0 16px;font-size:14px}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--mist);border-radius:9999px;padding:8px 16px;font-size:14px;font-weight:500}
+.pill .ic{width:16px;height:16px}
+
+/* Feedback */
+.fbline{display:flex;gap:10px;align-items:flex-start;border-radius:16px;padding:12px 16px;font-size:15px;line-height:22px;animation:pop .35s both}
+.fbline .ic{margin-top:2px}
+.fbline.ok{background:var(--ok-soft);color:var(--ok-ink)}
+.fbline.bad{background:var(--bad-soft);color:var(--bad-ink)}
+.fbline.info{background:var(--paper);color:var(--graphite);border:1px solid var(--mist)}
+.fbline:empty{display:none}
+
+/* Hero */
+.hero{gap:32px;padding-top:8px}
+.showcase{position:relative;width:min(620px,100%);padding:36px 28px}
+.window{border-radius:24px;background:var(--ocean);box-shadow:var(--sh-elev);padding-bottom:28px;position:relative;z-index:2}
+.chrome{display:flex;align-items:center;gap:8px;padding:14px 18px;font-size:13px;font-weight:500;color:rgba(255,255,255,.92)}
+.chrome i{width:12px;height:12px;border-radius:50%;background:#ff5f57}
+.chrome i:nth-child(2){background:#febc2e}.chrome i:nth-child(3){background:#28c840}
+.chrome .ttl{margin-left:8px;flex:1}
+.mailcard{margin:0 24px;background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;text-align:left;box-shadow:var(--sh-xl)}
+.sender{display:flex;align-items:center;gap:12px}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--paper);border:1px solid var(--mist);display:grid;place-items:center;font-weight:700}
+.sender > div{display:flex;flex-direction:column;line-height:20px;min-width:0}
+.sender small{color:var(--smoke);font-size:13px;overflow-wrap:anywhere}
+.urgent{margin-left:auto;background:var(--bad-soft);color:var(--bad-ink);font-size:12px;font-weight:600;border-radius:9999px;padding:4px 10px;letter-spacing:.6px;text-transform:uppercase}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+.float-tile{position:absolute;left:var(--x);top:var(--y);rotate:var(--r);animation:float 6s ease-in-out infinite;animation-delay:var(--d);z-index:3}
+.float-tile.back{z-index:1}
+.display{font-size:96px;line-height:96px;letter-spacing:-2.4px;font-weight:900;text-align:center}
+.meta{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%}
+.stat{background:#fff;border:1px solid var(--mist);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:12px}
+.stat .num{font-size:48px;line-height:52px;letter-spacing:-1.2px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat p{font-size:15px;line-height:22px;color:var(--graphite)}
+
+/* Swipe deck */
+.deck-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
+.deck-stage{width:100%;overflow:hidden;padding:12px 0 28px;display:flex;justify-content:center}
+.deck{position:relative;width:min(360px,100%);height:210px}
+.dcard{position:absolute;inset:0;background:#fff;border:1px solid var(--mist);border-radius:24px;box-shadow:var(--sh-md);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;font-size:24px;line-height:32px;font-weight:700;transform:translateY(calc(var(--k) * 12px)) scale(calc(1 - var(--k) * .05));transition:transform .45s cubic-bezier(.2,.7,.2,1),opacity .45s}
+.dcard .n{font-size:12px;line-height:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--smoke);font-weight:600}
+.dcard.fly-l{transform:translate(-130%,-20px) rotate(-16deg);opacity:0}
+.dcard.fly-r{transform:translate(130%,-20px) rotate(16deg);opacity:0}
+.deck-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.deck-done{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;animation:pop .4s both}
+.big{font-size:48px;line-height:52px;letter-spacing:-1.2px;font-weight:700;font-variant-numeric:tabular-nums}
+.score-line{font-size:14px;color:var(--smoke)}
+
+/* Chat */
+.chat{display:flex;flex-direction:column;gap:10px}
+.bubble{max-width:82%;padding:12px 16px;border-radius:20px;font-size:15px;line-height:22px;animation:pop .35s both}
+.bubble.cust{align-self:flex-start;background:var(--paper);border:1px solid var(--mist);border-bottom-left-radius:8px}
+.bubble.agent{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:8px}
+.bubble.typing{display:flex;gap:4px;padding:16px 18px}
+.bubble.typing i{width:7px;height:7px;border-radius:50%;background:var(--smoke);animation:blink 1s infinite}
+.bubble.typing i:nth-child(2){animation-delay:.15s}.bubble.typing i:nth-child(3){animation-delay:.3s}
+.who-lbl{font-size:12px;line-height:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--smoke);font-weight:600}
+.who-lbl.right{align-self:flex-end}
+.replies{display:flex;flex-direction:column;gap:8px;padding-top:12px;margin-top:4px;border-top:1px solid var(--mist);animation:pop .35s both}
+.reply{text-align:left;padding:12px 16px;border-radius:16px;border:1px solid var(--mist);background:#fff;font-size:15px;line-height:22px;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s}
+.reply:hover:not(:disabled){border-color:var(--blue);transform:translateY(-1px);box-shadow:var(--sh-btn)}
+.reply.right{border-color:var(--ok);background:var(--ok-soft)}
+.reply.wrong{border-color:var(--bad);background:var(--bad-soft);animation:shake .45s}
+.reply:disabled{cursor:default}
+.fbline.mini{align-self:flex-end;font-size:14px;padding:8px 12px;max-width:82%}
+
+/* Check lights */
+.lights{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.light{display:flex;align-items:center;gap:10px;padding:8px 18px 8px 8px;border-radius:9999px;border:1px solid var(--mist);background:#fff;font-weight:600;font-size:15px;box-shadow:var(--sh-btn)}
+
+/* Scan game */
+.scan{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:16px}
+.rec{background:var(--paper);border:1px solid var(--mist);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:0;font-size:14px}
+.kv dt{color:var(--smoke)}
+.kv dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.inmail{position:relative;overflow:hidden;border:1px solid var(--mist);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--sh-xl)}
+.scanline{position:absolute;left:0;right:0;height:80px;top:-80px;background:linear-gradient(to bottom,transparent,rgba(14,149,238,.22),transparent);pointer-events:none}
+.inmail.scanning .scanline{animation:scan .9s ease-in-out}
+.tokens{display:flex;flex-direction:column;gap:8px}
+.token{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border-radius:12px;border:1px dashed var(--ash);background:#fff;cursor:pointer;font-size:14px;transition:border-color .15s,background .15s,transform .15s}
+.token span:first-child{color:var(--smoke);flex:none}
+.token span:last-child{font-weight:600;overflow-wrap:anywhere;text-align:right}
+.token.empty span:last-child{color:var(--smoke);font-style:italic;font-weight:500}
+.token:hover:not(:disabled){border-color:var(--blue);border-style:solid;transform:translateX(2px)}
+.token.good{border:1px solid var(--ok);background:var(--ok-soft)}
+.token.bad{border:1px solid var(--bad);background:var(--bad-soft)}
+.token:disabled{cursor:default}
+.scan-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.hint{font-size:14px;color:var(--smoke)}
+.progress-dots{display:flex;gap:6px}
+.progress-dots i{width:24px;height:6px;border-radius:9999px;background:var(--mist);transition:background .3s}
+.progress-dots i.on{background:var(--blue)}
+
+/* Mail app sim */
+.mailapp{border:1px solid var(--mist);border-radius:24px;overflow:hidden;box-shadow:var(--sh-xl);background:#fff}
+.mailapp .chrome{background:var(--paper);color:var(--graphite);border-bottom:1px solid var(--mist)}
+.mailgrid{display:grid;grid-template-columns:180px minmax(0,1fr);min-height:340px}
+.folders{background:var(--paper);border-right:1px solid var(--mist);padding:12px;display:flex;flex-direction:column;gap:4px}
+.folder{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;border:0;background:transparent;cursor:pointer;font-size:14px;text-align:left}
+.folder:hover{background:#fff}
+.folder.on{background:#fff;box-shadow:var(--sh-btn);font-weight:600}
+.folder .c{font-size:12px;color:var(--smoke);font-variant-numeric:tabular-nums}
+.folder .c.hit{color:#fff;background:var(--blue);border-radius:9999px;padding:0 7px;font-weight:600;animation:pop .3s}
+.mailmain{padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.searchbar{display:flex;align-items:center;gap:8px;height:44px;border-radius:12px;background:var(--paper);border:1px solid var(--mist);padding:0 14px;font-size:15px}
+.searchbar .ph{color:var(--smoke)}
+.caret{width:1.5px;height:18px;background:var(--blue);animation:blink 1s steps(1) infinite}
+.kchips{display:flex;flex-wrap:wrap;gap:8px}
+.kchip{height:34px;padding:0 14px;border-radius:9999px;border:1px solid var(--mist);background:#fff;font-size:14px;cursor:pointer;transition:all .15s}
+.kchip:hover{border-color:var(--ash)}
+.kchip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.msgs{display:flex;flex-direction:column;gap:4px}
+.msg{display:grid;grid-template-columns:36px minmax(0,1fr);gap:0 12px;align-items:center;width:100%;text-align:left;padding:10px;border-radius:12px;border:1px solid transparent;background:#fff;cursor:pointer;animation:pop .3s both}
+.msg:hover{background:var(--paper)}
+.msg .av{grid-row:span 2;width:36px;height:36px;border-radius:50%;background:var(--paper);border:1px solid var(--mist);display:grid;place-items:center;font-weight:700;font-size:13px}
+.msg .f{font-weight:600;font-size:14px}
+.msg .s{font-size:14px;color:var(--graphite);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg.shake{animation:shake .45s}
+.empty{padding:28px 12px;text-align:center;color:var(--smoke);font-size:14px}
+.opened{border:1px solid var(--mist);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;animation:pop .4s both}
+.ordno{display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:14px;padding:14px 16px;background:var(--splash);border:1px solid var(--blue);animation:glow 1.6s ease-in-out 2}
+.ordno b{font-size:20px;letter-spacing:.5px}
+
+/* Duel */
+.duel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.duel-opt{display:flex;flex-direction:column;gap:14px;text-align:left;padding:24px;border-radius:24px;border:1px solid var(--mist);background:#fff;cursor:pointer;font-size:15px;line-height:23px;transition:transform .2s,box-shadow .2s,border-color .2s,opacity .3s}
+.duel-opt:hover:not(:disabled){transform:translateY(-3px);box-shadow:var(--sh-md)}
+.duel-opt.good{border-color:var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}
+.duel-opt.bad{border-color:var(--bad);animation:shake .45s}
+.duel-opt.dim{opacity:.4}
+.duel-opt:disabled{cursor:default}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;border-radius:9999px;padding:4px 10px;animation:pop .3s both}
+.tag.g{background:var(--ok-soft);color:var(--ok-ink)}
+.tag.b{background:var(--bad-soft);color:var(--bad-ink)}
+.tag .ic{width:12px;height:12px}
+
+/* Route tiles */
+.routes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:100%}
+.route{display:flex;align-items:center;gap:16px;padding:20px;border-radius:24px;border:1px solid var(--mist);background:#fff;cursor:pointer;text-align:left;transition:transform .2s,box-shadow .2s}
+.route:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
+.route b{display:block}
+.route span{font-size:14px;color:var(--graphite)}
+
+/* Flow diagram */
+.flow{display:flex;align-items:flex-start;justify-content:center;width:100%}
+.node{display:flex;flex-direction:column;align-items:center;gap:10px;width:130px;text-align:center;font-size:14px;font-weight:600;line-height:20px}
+.link{flex:1;max-width:160px;min-width:40px;position:relative;height:48px;display:flex;align-items:center}
+.link::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px dashed var(--ash)}
+.link::after{content:"";position:absolute;top:calc(50% - 5px);left:0;width:10px;height:10px;border-radius:50%;background:var(--blue);animation:travel 2.4s ease-in-out infinite;animation-delay:var(--d,0s)}
+.link small{position:absolute;top:-6px;left:0;right:0;text-align:center;font-size:12px;line-height:16px;color:var(--smoke);font-weight:500}
+
+/* Authorization builder */
+.compose{border:1px solid var(--mist);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:var(--sh-xl)}
+.compose-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px}
+.okpill{display:inline-flex;align-items:center;gap:4px;background:var(--ok-soft);color:var(--ok-ink);border-radius:9999px;padding:2px 10px;font-size:13px;font-weight:600}
+.okpill .ic{width:12px;height:12px}
+.sentence{font-size:20px;line-height:46px;font-weight:500}
+.blank{display:inline-flex;align-items:center;justify-content:center;min-width:130px;height:38px;padding:0 16px;margin:0 2px;border-radius:9999px;border:1.5px dashed var(--ash);background:var(--paper);vertical-align:middle;cursor:pointer;font-size:15px;font-weight:600;transition:all .2s}
+.blank.filled{border-style:solid;border-color:var(--blue);background:#fff;animation:pop .3s}
+.blank.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ok-ink)}
+.blank.no{border-color:var(--bad);background:var(--bad-soft);color:var(--bad-ink);animation:shake .45s}
+.pool{display:flex;flex-wrap:wrap;gap:8px}
+.tok{height:40px;padding:0 16px;border-radius:9999px;border:1px solid var(--mist);background:#fff;cursor:pointer;font-size:15px;font-weight:500;box-shadow:var(--sh-btn);transition:transform .15s,opacity .2s}
+.tok:hover{transform:translateY(-2px)}
+.tok.used{opacity:0;pointer-events:none;transform:scale(.8)}
+
+/* Receipt game */
+.rgame{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;align-items:start}
+.slots{display:flex;flex-direction:column;gap:8px}
+.slot{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:9999px;background:var(--paper);border:1px solid var(--mist);font-size:14px;font-weight:600;color:var(--smoke);transition:all .25s}
+.slot .chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ash);display:grid;place-items:center;color:#fff;flex:none}
+.slot .chk .ic{width:12px;height:12px;opacity:0}
+.slot.on{background:#fff;border-color:var(--blue);color:var(--ink)}
+.slot.on .chk{background:var(--ocean);border-color:transparent;animation:pop .35s}
+.slot.on .chk .ic{opacity:1}
+.slot.miss{background:var(--bad-soft);border-color:var(--bad);color:var(--bad-ink);animation:shake .45s}
+.slot.miss .chk{background:var(--bad);border-color:var(--bad)}
+.receipt{border:1px solid var(--mist);border-radius:24px;padding:24px;background:#fff;box-shadow:var(--sh-xl);display:flex;flex-direction:column;gap:12px;animation:pop .4s both}
+.receipt hr{border:0;border-top:1px dashed var(--mist);margin:2px 0;width:100%}
+.part{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:6px 8px;margin:0 -8px;width:calc(100% + 16px);border:0;border-radius:10px;background:transparent;text-align:left;cursor:pointer;font-size:14px;transition:background .15s}
+.part:hover{background:rgba(14,149,238,.08)}
+.part.found{background:rgba(14,149,238,.1)}
+.part .k{color:var(--smoke)}
+.part .v{font-weight:600;text-align:right;overflow-wrap:anywhere}
+.logo-part{justify-content:flex-start}
+.logo-part .lg{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:16px;flex:none}
+.static{display:flex;justify-content:space-between;font-size:14px;padding:0 0}
+.static span:first-child{color:var(--smoke)}
+
+/* Vault */
+.typo{display:flex;flex-direction:column;gap:8px;align-items:center;font-size:18px}
+.typo .addr{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+.typo mark{background:var(--bad-soft);color:var(--bad-ink);border-radius:6px;padding:0 3px;animation:glowred 1.6s ease-in-out infinite}
+.typo mark.okm{background:var(--ok-soft);color:var(--ok-ink);animation:none}
+.vault{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px;align-items:center}
+.lockbox{display:flex;flex-direction:column;align-items:center;gap:16px}
+.lock{width:140px;height:auto;overflow:visible}
+.lock .shackle{transition:transform .7s cubic-bezier(.3,1.6,.5,1);transform-box:fill-box;transform-origin:center bottom}
+.vault.open .lock .shackle{transform:translateY(-16px)}
+.vault.open .lock{animation:bump .7s .2s}
+.keys{display:flex;gap:8px}
+.keys i{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--ash);transition:all .3s}
+.keys i.on{background:var(--ocean);border-color:transparent;animation:pop .35s}
+.qpool{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.qchip{min-height:48px;padding:10px 16px;border-radius:16px;border:1px solid var(--mist);background:#fff;cursor:pointer;text-align:left;font-size:15px;font-weight:500;line-height:20px;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:all .2s}
+.qchip:hover:not(:disabled){border-color:var(--blue);transform:translateY(-1px)}
+.qchip.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ok-ink)}
+.qchip.no{border-color:var(--bad);background:var(--bad-soft);color:var(--bad-ink);animation:shake .45s}
+.qchip:disabled{cursor:default}
+.qchip small{font-size:12px;font-weight:600}
+.advise{display:flex;align-items:center;gap:16px;padding:20px;border-radius:20px;background:var(--splash);border:1px solid var(--mist);animation:rise .6s both}
+
+/* Swap tile (chat) */
+.swapper{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.swapchip{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:9999px;border:1px solid var(--blue);background:#fff;font-weight:600;box-shadow:0 0 0 4px rgba(14,149,238,.1)}
+.swapchip.flip{animation:flipx .5s}
+.strike{text-decoration:line-through;color:var(--smoke)}
+
+/* Club toggle */
+.seg{display:inline-flex;background:var(--paper);border:1px solid var(--mist);border-radius:9999px;padding:4px;gap:4px}
+.seg button{border:0;background:transparent;border-radius:9999px;padding:10px 20px;font-weight:600;font-size:14px;cursor:pointer;color:var(--graphite);transition:all .2s}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:var(--sh-btn)}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.col{background:var(--paper);border:1px solid var(--mist);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.col-h{display:flex;align-items:center;gap:12px;font-weight:700;font-size:18px}
+.ck{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:#fff;border:1px solid var(--mist);font-size:15px;font-weight:500}
+.ck .ic{color:var(--blue)}
+.ck.hl{border-color:var(--blue);box-shadow:0 0 0 3px rgba(14,149,238,.12)}
+.ck.flip{animation:flipx .5s}
+
+/* Template builder */
+.tb{display:grid;grid-template-columns:280px minmax(0,1fr);gap:24px;align-items:start}
+.controls{display:flex;flex-direction:column;gap:20px;position:sticky;top:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12px;line-height:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--smoke);font-weight:600}
+.field input{height:44px;border-radius:12px;border:1px solid var(--mist);padding:0 14px;font-size:15px;background:#fff;width:100%}
+.field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(14,149,238,.15)}
+.toggles{display:flex;flex-direction:column;gap:8px}
+.tg{display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;border-radius:9999px;border:1px solid var(--mist);background:#fff;cursor:pointer;font-size:14px;font-weight:600;text-align:left;transition:all .2s}
+.tg .sw{width:34px;height:20px;border-radius:9999px;background:var(--mist);position:relative;flex:none;transition:background .2s}
+.tg .sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:var(--sh-btn);transition:transform .2s}
+.tg.on .sw{background:var(--blue)}
+.tg.on .sw::after{transform:translateX(14px)}
+.preview{border:1px solid var(--mist);border-radius:24px;overflow:hidden;box-shadow:var(--sh-xl)}
+.preview .chrome{background:var(--paper);color:var(--graphite);border-bottom:1px solid var(--mist)}
+.pv-body{padding:24px;display:flex;flex-direction:column;gap:12px;font-size:15px;line-height:24px}
+.pv-subj{font-weight:700;font-size:18px;line-height:26px}
+.blk{border-left:3px solid var(--blue);background:var(--paper);border-radius:0 14px 14px 0;padding:12px 16px;display:flex;flex-direction:column;gap:4px;animation:slidein .4s both}
+.blk ul{margin:0;padding-left:20px}
+.fillin{background:rgba(14,149,238,.1);border-radius:6px;padding:0 4px;font-weight:600}
+
+/* Quiz */
+.qtop{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.qbar{height:8px;border-radius:9999px;background:var(--paper);border:1px solid var(--mist);overflow:hidden;width:100%}
+.qbar span{display:block;height:100%;background:var(--ocean);width:0;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.streak{display:inline-flex;align-items:center;gap:6px;border-radius:9999px;padding:6px 14px;background:var(--paper);border:1px solid var(--mist);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.streak.hot{background:var(--ink);color:#fff;border-color:var(--ink);animation:bump .5s}
+.qq{font-size:24px;line-height:32px;font-weight:700;animation:rise .45s both}
+.qopts{display:flex;flex-direction:column;gap:8px}
+.qopts .reply{animation:rise .45s both}
+.review{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.review li{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:20px;padding:10px 14px;border-radius:14px;background:var(--paper)}
+.review li .ic{width:16px;height:16px;margin-top:2px;color:var(--ok)}
+.review li.miss .ic{color:var(--bad)}
+
+/* Recap flip cards */
+.flips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;width:100%}
+.fc{display:block;width:100%;height:230px;perspective:1100px;border:0;background:transparent;padding:0;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.fc-in{display:block;position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.fc.on .fc-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:24px;border:1px solid var(--mist);background:#fff;padding:24px;display:flex;flex-direction:column;gap:12px}
+.face.front{justify-content:space-between}
+.face.front b{font-size:20px;line-height:28px;font-weight:700}
+.face.front small{font-size:13px;color:var(--smoke);display:flex;align-items:center;gap:6px}
+.face.back{transform:rotateY(180deg);background:var(--paper)}
+.face.back ul{margin:0;padding-left:18px;font-size:14px;line-height:21px;display:flex;flex-direction:column;gap:4px}
+.face.back b{font-size:15px}
+.cert{position:relative;overflow:hidden;border-radius:24px;border:1px solid var(--mist);padding:48px 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;background:#fff;box-shadow:var(--sh-xl)}
+.cert::before{content:"";position:absolute;inset:0;background:var(--splash);pointer-events:none}
+.cert > *{position:relative}
+.cert-name{font-size:48px;line-height:52px;letter-spacing:-1.2px;font-weight:700;min-height:52px;overflow-wrap:anywhere}
+.cert-meta{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+
+/* Learn walkthrough */
+.phase{display:flex;align-items:center;gap:12px;align-self:flex-start}
+.phase > div{display:flex;flex-direction:column;line-height:20px}
+.phase b{font-size:18px;line-height:24px;font-weight:700}
+.ph-n{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700;flex:none}
+.lesson > .phase.check{width:100%;margin-bottom:-24px}
+.lgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:stretch}
+.lv{background:var(--splash);border:1px solid var(--mist);border-radius:20px;padding:28px;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;overflow:hidden}
+.lv > *{animation:pop .45s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--j,0) * 90ms)}
+.lt{display:flex;flex-direction:column;gap:14px;min-width:0}
+.lt h3{font-size:24px;line-height:32px;font-weight:700;animation:rise .45s both}
+.lbody{display:flex;flex-direction:column;gap:10px;font-size:16px;line-height:25px;color:var(--graphite);animation:rise .45s .08s both}
+.lbody b{color:var(--ink)}
+.lbody ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.lnav{margin-top:auto;padding-top:8px}
+.lbars{display:flex;gap:6px}
+.lbars button{flex:1;height:6px;border-radius:9999px;border:0;padding:0;background:var(--mist);cursor:pointer;transition:background .3s}
+.lbars button.on{background:var(--blue)}
+.tile.lg{width:76px;height:76px;border-radius:22px}
+.tile.lg .ic{width:36px;height:36px}
+.v-big{font-size:24px;line-height:32px;font-weight:700}
+.vcol{display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;max-width:380px}
+.vrowx{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+.vchips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:380px}
+.vchips .pill{background:#fff;animation:pop .4s both}
+.vrow{display:flex;gap:10px;align-items:center;text-align:left;padding:12px 16px;border-radius:14px;background:#fff;border:1px solid;font-size:15px;line-height:22px;width:100%}
+.vrow.ok{border-color:var(--ok);color:var(--ok-ink)}
+.vrow.bad{border-color:var(--bad);color:var(--bad-ink)}
+.vmail{background:#fff;border:1px solid var(--mist);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;width:100%;text-align:left;font-size:14px;line-height:21px;box-shadow:var(--sh-md)}
+.vmail .kv{font-size:13px}
+.lv .bubble{max-width:100%;text-align:left}
+.lv .light{box-shadow:var(--sh-btn)}
+.mk{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px;font-weight:700;margin-right:4px;vertical-align:1px;flex:none}
+.marks{margin:0;padding:0;list-style:none;counter-reset:m;display:flex;flex-direction:column;gap:8px}
+.marks li{counter-increment:m;display:flex;gap:10px;align-items:center}
+.marks li::before{content:counter(m);display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px;font-weight:700;flex:none}
+.card.gated{position:relative;pointer-events:none;user-select:none}
+.card.gated > *{filter:blur(3px);opacity:.3}
+.card.gated::after{content:"Finish the walkthrough above to unlock";position:absolute;inset:0;display:grid;place-items:center;padding-top:56px;border-radius:24px;font-weight:600;font-size:15px;color:var(--graphite);background:rgba(255,255,255,.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='11' width='18' height='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E") no-repeat center calc(50% - 18px)/30px}
+@media (max-width:680px){.lgrid{grid-template-columns:1fr;gap:20px}.lv{min-height:220px;padding:20px}}
+
+/* Dock */
+.dock{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:24px;background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);border:1px solid var(--mist);box-shadow:var(--sh-xl);max-width:calc(100vw - 24px)}
+.dock-tiles{display:flex;align-items:flex-end;gap:6px}
+.dt{position:relative;width:40px;height:40px;border-radius:12px;border:0;padding:0;cursor:pointer;color:#fff;display:grid;place-items:center;box-shadow:var(--sh-sm);transition:transform .22s cubic-bezier(.2,.7,.2,1)}
+.dt .ic{width:20px;height:20px}
+.dt:hover{transform:translateY(-8px) scale(1.18)}
+.dt[aria-current="true"]{transform:translateY(-4px) scale(1.1)}
+.dt[aria-current="true"]::after{content:"";position:absolute;bottom:-9px;left:calc(50% - 2px);width:4px;height:4px;border-radius:50%;background:var(--ink)}
+.dt .done{position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:var(--ink);border:2px solid #fff;display:grid;place-items:center;animation:pop .3s}
+.dt .done .ic{width:9px;height:9px;stroke-width:3.5}
+.dt .tip{position:absolute;bottom:calc(100% + 12px);left:50%;translate:-50% 0;background:var(--ink);color:#fff;font-size:12px;line-height:16px;font-weight:600;padding:5px 10px;border-radius:9999px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
+.dt:hover .tip,.dt:focus-visible .tip{opacity:1}
+.navbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--mist);background:#fff;display:grid;place-items:center;cursor:pointer;flex:none;transition:transform .15s}
+.navbtn:hover:not(:disabled){transform:scale(1.08)}
+.navbtn:disabled{opacity:.3;cursor:not-allowed}
+.sep{width:1px;height:28px;background:var(--mist);flex:none}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));translate:-50% 0;z-index:50;background:var(--ink);color:#fff;border-radius:9999px;padding:12px 20px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:var(--sh-md);animation:toast 2.6s both;max-width:calc(100vw - 32px)}
+.plus{position:fixed;z-index:60;font-weight:700;font-size:18px;color:var(--blue);pointer-events:none;animation:plus 1.1s ease-out forwards}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:70}
+
+/* Motion */
+.shake{animation:shake .45s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.92)}100%{opacity:1;transform:scale(1)}}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -14px}}
+@keyframes shake{10%,90%{translate:-1px 0}20%,80%{translate:3px 0}30%,50%,70%{translate:-6px 0}40%,60%{translate:6px 0}}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes scan{to{top:100%}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(14,149,238,0)}50%{box-shadow:0 0 0 8px rgba(14,149,238,.18)}}
+@keyframes glowred{0%,100%{box-shadow:0 0 0 0 rgba(240,68,56,0)}50%{box-shadow:0 0 0 4px rgba(240,68,56,.2)}}
+@keyframes travel{0%{left:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:calc(100% - 10px);opacity:0}}
+@keyframes flipx{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+@keyframes slidein{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+@keyframes toast{0%{opacity:0;transform:translateY(12px)}10%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(8px)}}
+@keyframes plus{0%{opacity:0;transform:translateY(0) scale(.8)}20%{opacity:1;transform:translateY(-10px) scale(1.1)}100%{opacity:0;transform:translateY(-48px)}}
+
+/* Responsive */
+@media (max-width:860px){
+  .flips{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tb,.rgame,.vault{grid-template-columns:1fr}
+  .controls{position:static}
+  .lockbox{order:-1}
+}
+@media (max-width:680px){
+  .h{font-size:34px;line-height:40px;letter-spacing:-.85px}
+  .display{font-size:60px;line-height:60px;letter-spacing:-1.5px}
+  .sub{font-size:16px;line-height:24px}
+  .card{padding:20px;gap:20px}
+  .lesson{gap:32px;padding-top:24px}
+  .stats,.scan,.duel,.cols,.routes,.qpool{grid-template-columns:1fr}
+  .mailgrid{grid-template-columns:1fr}
+  .folders{flex-direction:row;border-right:0;border-bottom:1px solid var(--mist);overflow-x:auto}
+  .folder{flex:1;justify-content:center}
+  .flow{flex-direction:column;align-items:center}
+  .link{width:2px;height:56px;min-width:0;flex:none}
+  .link::before{left:50%;right:auto;top:0;bottom:0;border-top:0;border-left:2px dashed var(--ash)}
+  .link::after{left:calc(50% - 5px);animation-name:travely}
+  .link small{top:auto;left:18px;right:auto;width:180px;text-align:left;top:20px}
+  .sentence{font-size:17px;line-height:44px}
+  .blank{min-width:110px}
+  .mailcard{margin:0 14px;padding:18px}
+  .showcase{padding:28px 8px}
+  .float-tile.hide-sm{display:none}
+  .float-tile .tile{width:40px;height:40px}
+  .cert-name{font-size:34px;line-height:40px}
+  .now{display:none}
+}
+@keyframes travely{0%{top:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{top:calc(100% - 10px);opacity:0}}
+@media (max-width:560px){
+  .flips{grid-template-columns:1fr}
+  .navbtn,.sep{display:none}
+  .dock{padding:8px;gap:4px}
+  .dock-tiles{gap:4px}
+  .dt{width:22px;height:22px;border-radius:8px}
+  .dt .ic{width:13px;height:13px}
+  .dt .done{width:12px;height:12px;top:-4px;right:-4px;border-width:1.5px}
+  .dt .done .ic{width:6px;height:6px}
+  .dt .tip{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9l1.5-5h15L21 9M3 9h18M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M5 12v8h14v-8M10 20v-5h4v5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-hash" viewBox="0 0 24 24"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></symbol>
+  <symbol id="i-id" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h2M15 12h2M7 16h10"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 0 0-3-1.5c-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5M12 6v2M12 16v2"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></symbol>
+  <symbol id="i-flip" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></symbol>
+</svg>
+
+<div class="page">
+  <header class="topbar">
+    <div class="wordmark"><span class="tile sm t-blue"><svg class="ic"><use href="#i-shield"/></svg></span>VERIFY</div>
+    <div class="now"><span class="dot"></span><span id="nowTxt">Welcome</span></div>
+    <div class="pts" id="pts" title="Points earned"><svg class="ic"><use href="#i-star"/></svg><span id="ptsN">0</span> pts</div>
+  </header>
+
+<!-- 1 WELCOME -->
+<section class="lesson hero" id="welcome" data-title="Welcome" data-icon="shield" data-tone="t-blue">
+  <div class="showcase">
+    <span class="float-tile" style="--x:-2%;--y:6%;--r:-14deg;--d:0s"><span class="tile t-pink"><svg class="ic"><use href="#i-gift"/></svg></span></span>
+    <span class="float-tile" style="--x:88%;--y:0%;--r:12deg;--d:-1.5s"><span class="tile t-green"><svg class="ic"><use href="#i-chat"/></svg></span></span>
+    <span class="float-tile hide-sm" style="--x:-5%;--y:62%;--r:10deg;--d:-3s"><span class="tile t-teal"><svg class="ic"><use href="#i-store"/></svg></span></span>
+    <span class="float-tile hide-sm" style="--x:92%;--y:58%;--r:-10deg;--d:-2s"><span class="tile t-purple"><svg class="ic"><use href="#i-lock"/></svg></span></span>
+    <span class="float-tile back hide-sm" style="--x:22%;--y:-4%;--r:18deg;--d:-4s"><span class="tile t-indigo"><svg class="ic"><use href="#i-id"/></svg></span></span>
+    <span class="float-tile" style="--x:72%;--y:90%;--r:-16deg;--d:-2.6s"><span class="tile t-orange"><svg class="ic"><use href="#i-search"/></svg></span></span>
+    <div class="window">
+      <div class="chrome"><i></i><i></i><i></i><span class="ttl">Inbox · Customer Care</span><span>Mon 9:12</span></div>
+      <div class="mailcard" id="heroMail">
+        <div class="sender"><span class="avatar">S</span><div><b>Sam</b><small>sam.parcels@mailbox.com</small></div><span class="urgent">Urgent</span></div>
+        <p>Hi, please change the delivery address on order <b class="mono">BR-48219</b> to 14 Marsh Lane today. Thanks!</p>
+        <div class="row"><button class="btn outline sm" data-hero="change">Change the address</button><button class="btn primary sm" data-hero="verify"><svg class="ic"><use href="#i-shield"/></svg>Verify first</button></div>
+        <div class="fbline" id="heroResult" hidden></div>
+      </div>
+    </div>
+  </div>
+  <h1 class="display">Verify first.</h1>
+  <p class="sub" style="text-align:center">Hands-on practice for keeping customer data safe on every channel.</p>
+  <div class="meta"><span class="pill"><svg class="ic"><use href="#i-book"/></svg>12 lessons</span><span class="pill"><svg class="ic"><use href="#i-bolt"/></svg>~30 min</span><span class="pill"><svg class="ic"><use href="#i-book"/></svg>Learn, then practise</span><span class="pill"><svg class="ic"><use href="#i-award"/></svg>Pass 8/10</span><span class="pill"><svg class="ic"><use href="#i-star"/></svg>Earn points</span></div>
+  <button class="btn primary" data-next>Start the course<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 2 GDPR -->
+<section class="lesson" id="gdpr" data-title="GDPR" data-icon="lock" data-tone="t-purple" hidden>
+  <div class="intro">
+    <span class="eyebrow">GDPR</span>
+    <h2 class="h">Their data. Our responsibility.</h2>
+    <p class="sub">The EU's General Data Protection Regulation, in force since 25 May 2018. Personal data goes only to its owner, or someone they authorize.</p>
+  </div>
+  <div class="card learn" id="learn-gdpr"></div>
+  <div class="stats">
+    <div class="stat"><span class="tile sm t-purple"><svg class="ic"><use href="#i-coin"/></svg></span><span class="num" data-count="20" data-pre="€" data-suf="M">€20M</span><p>Maximum fine for serious breaches</p></div>
+    <div class="stat"><span class="tile sm t-pink"><svg class="ic"><use href="#i-alert"/></svg></span><span class="num" data-count="4" data-suf="%">4%</span><p>of global annual turnover, if that's higher</p></div>
+    <div class="stat"><span class="tile sm t-orange"><svg class="ic"><use href="#i-cal"/></svg></span><span class="num" data-count="72" data-suf="h">72h</span><p>to report a breach to the regulator</p></div>
+  </div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-purple"><svg class="ic"><use href="#i-flip"/></svg></span><div><span class="eyebrow">Game</span><h3>Personal data, or not?</h3></div></div>
+    <div id="deckGdpr" class="deck-wrap"></div>
+  </div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-ink"><svg class="ic"><use href="#i-lock"/></svg></span><div><span class="eyebrow">The golden rule</span><h3>Ask, don't tell</h3></div></div>
+    <div id="chatAsk"></div>
+  </div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 3 EMAIL -->
+<section class="lesson" id="email" data-title="Email checks" data-icon="mail" data-tone="t-sky" hidden>
+  <div class="intro">
+    <span class="eyebrow">Email channel</span>
+    <h2 class="h">Three checks. All must pass.</h2>
+  </div>
+  <div class="card learn" id="learn-email"></div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-sky"><svg class="ic"><use href="#i-search"/></svg></span><div><span class="eyebrow">Simulation</span><h3>Scan the case</h3></div></div>
+    <div id="scanGame" style="display:flex;flex-direction:column;gap:16px"></div>
+  </div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 4 MISSING ORDER NUMBER -->
+<section class="lesson" id="missing" data-title="No order number" data-icon="search" data-tone="t-orange" hidden>
+  <div class="intro">
+    <span class="eyebrow">No order number</span>
+    <h2 class="h">Don't block. Send them searching.</h2>
+    <p class="sub">Every online and in-store order triggers an automatic confirmation and receipt email.</p>
+  </div>
+  <div class="card learn" id="learn-missing"></div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-orange"><svg class="ic"><use href="#i-mail"/></svg></span><div><span class="eyebrow">Simulation · Be the customer</span><h3>Find Layla's order confirmation</h3></div></div>
+    <div id="mailSim" style="display:flex;flex-direction:column;gap:16px"></div>
+  </div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-ink"><svg class="ic"><use href="#i-chat"/></svg></span><div><span class="eyebrow">Pick one</span><h3>Which reply gets the order number fastest?</h3></div></div>
+    <div id="duelMissing" style="display:flex;flex-direction:column;gap:16px"></div>
+  </div>
+  <div class="routes">
+    <button class="route" data-goto="gifts"><span class="tile t-pink"><svg class="ic"><use href="#i-gift"/></svg></span><div><b>Still nothing? It may be a gift</b><span>The buyer got the confirmation.</span></div></button>
+    <button class="route" data-goto="sellers"><span class="tile t-teal"><svg class="ic"><use href="#i-store"/></svg></span><div><b>Or bought from an authorized seller</b><span>The seller sent the confirmation.</span></div></button>
+  </div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 5 GIFTS -->
+<section class="lesson" id="gifts" data-title="Gifts" data-icon="gift" data-tone="t-pink" hidden>
+  <div class="intro">
+    <span class="eyebrow">Gifts</span>
+    <h2 class="h">A gift? The buyer must say yes.</h2>
+    <p class="sub">The person who placed the order is the customer. The receiver needs their written OK.</p>
+  </div>
+  <div class="flow">
+    <div class="node"><span class="tile t-pink"><svg class="ic"><use href="#i-gift"/></svg></span>Gift receiver</div>
+    <div class="link"><small>CC's the buyer, or buyer contacts us</small></div>
+    <div class="node"><span class="tile t-sky"><svg class="ic"><use href="#i-user"/></svg></span>Original purchaser</div>
+    <div class="link" style="--d:1.2s"><small>Replies: who + until when</small></div>
+    <div class="node"><span class="tile t-green"><svg class="ic"><use href="#i-check"/></svg></span>Authorized</div>
+  </div>
+  <div class="card learn" id="learn-gifts"></div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-pink"><svg class="ic"><use href="#i-pen"/></svg></span><div><span class="eyebrow">Build it</span><h3>Write Sara's authorization</h3></div></div>
+    <p class="muted" style="margin-top:-8px">Sara bought the jacket for Omar. Tap the words to complete her reply.</p>
+    <div id="authBuilder" style="display:flex;flex-direction:column;gap:16px"></div>
+  </div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-ink"><svg class="ic"><use href="#i-flip"/></svg></span><div><span class="eyebrow">Speed round</span><h3>Valid authorization?</h3></div></div>
+    <div id="deckGift" class="deck-wrap"></div>
+  </div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 6 SELLERS -->
+<section class="lesson" id="sellers" data-title="Authorized sellers" data-icon="store" data-tone="t-teal" hidden>
+  <div class="intro">
+    <span class="eyebrow">Authorized sellers</span>
+    <h2 class="h">Five things on every receipt.</h2>
+    <p class="sub">Ask for the seller's confirmation. Can't find it? The seller can send another copy.</p>
+  </div>
+  <div class="card learn" id="learn-sellers"></div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-teal"><svg class="ic"><use href="#i-search"/></svg></span><div><span class="eyebrow">Inspector</span><h3>Tap each detail you can find</h3></div></div>
+    <div id="receiptGame" style="display:flex;flex-direction:column;gap:16px"></div>
+  </div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 7 TYPO -->
+<section class="lesson" id="typo" data-title="Email typo" data-icon="key" data-tone="t-amber" hidden>
+  <div class="intro">
+    <span class="eyebrow">Email typo</span>
+    <h2 class="h">A typo locks the door. Four keys open it.</h2>
+  </div>
+  <div class="card learn" id="learn-typo"></div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-amber"><svg class="ic"><use href="#i-key"/></svg></span><div><span class="eyebrow">Unlock it</span><h3>Pick the four security questions</h3></div></div>
+    <div class="vault" id="vault">
+      <div class="lockbox">
+        <svg class="lock" viewBox="0 0 120 140" aria-hidden="true">
+          <defs><linearGradient id="lockg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0e95ee"/><stop offset="1" stop-color="#27c9f5"/></linearGradient></defs>
+          <g class="shackle"><path d="M32 64V40a28 28 0 0 1 56 0v24" fill="none" stroke="#cccccc" stroke-width="12" stroke-linecap="round"/></g>
+          <rect x="12" y="58" width="96" height="78" rx="22" fill="url(#lockg)"/>
+          <circle cx="60" cy="92" r="9" fill="#ffffff"/><rect x="56" y="96" width="8" height="18" rx="4" fill="#ffffff"/>
+        </svg>
+        <div class="keys" id="keys"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+        <div class="qpool" id="qpool"></div>
+        <div class="fbline" id="vaultFb" hidden></div>
+      </div>
+    </div>
+    <div id="advise" hidden></div>
+  </div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 8 CHAT -->
+<section class="lesson" id="chat" data-title="Chat checks" data-icon="chat" data-tone="t-green" hidden>
+  <div class="intro">
+    <span class="eyebrow">Chat channel</span>
+    <h2 class="h">On chat, the checks change.</h2>
+  </div>
+  <div class="card learn" id="learn-chat"></div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-green"><svg class="ic"><use href="#i-chat"/></svg></span><div><span class="eyebrow">Live chat</span><h3>You're on with Yousef</h3></div></div>
+    <div id="chatSim"></div>
+  </div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 9 CLUB -->
+<section class="lesson" id="club" data-title="Club members" data-icon="id" data-tone="t-indigo" hidden>
+  <div class="intro">
+    <span class="eyebrow">Club membership</span>
+    <h2 class="h">Club question? One swap.</h2>
+    <p class="sub">The membership number replaces the order number. Everything else stays the same.</p>
+  </div>
+  <div class="card learn" id="learn-club"></div>
+  <div class="seg" role="tablist" id="clubSeg"><button class="on" data-m="order">Order question</button><button data-m="club">Club question</button></div>
+  <div class="cols" id="clubCols" style="width:100%"></div>
+  <div class="card">
+    <div class="act-head"><span class="tile t-indigo"><svg class="ic"><use href="#i-chat"/></svg></span><div><span class="eyebrow">Quick check</span><h3>Noor's Club points</h3></div></div>
+    <div id="chatClub"></div>
+  </div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 10 TEMPLATE -->
+<section class="lesson" id="template" data-title="All-in-one email" data-icon="pen" data-tone="t-gray" hidden>
+  <div class="intro">
+    <span class="eyebrow">All-in-one email</span>
+    <h2 class="h">One email. Every route.</h2>
+    <p class="sub">Not sure which scenario it is yet? Send this, so the customer gets verified in one reply.</p>
+  </div>
+  <div class="card learn" id="learn-template"></div>
+  <div class="tb" style="width:100%">
+    <div class="controls">
+      <div class="field"><label for="tbCust">Customer name</label><input id="tbCust" value="Layla" autocomplete="off"></div>
+      <div class="field"><label for="tbAgent">Your name</label><input id="tbAgent" value="Alex" autocomplete="off"></div>
+      <div class="field"><label>Include</label><div class="toggles" id="tbToggles"></div></div>
+      <button class="btn primary" id="tbCopy"><svg class="ic"><use href="#i-copy"/></svg><span>Copy email</span></button>
+    </div>
+    <div class="preview">
+      <div class="chrome"><i></i><i></i><i></i><span class="ttl">New message</span></div>
+      <div class="pv-body" id="tbPreview"></div>
+    </div>
+  </div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 11 ASSESSMENT -->
+<section class="lesson" id="assessment" data-title="Final assessment" data-icon="award" data-tone="t-ink" hidden>
+  <div class="intro">
+    <span class="eyebrow">Final assessment</span>
+    <h2 class="h">Case rush.</h2>
+    <p class="sub">10 cases. Score 8 to pass. Keep your streak alive.</p>
+  </div>
+  <div class="card" id="quiz"></div>
+  <button class="btn primary" data-next>Continue<svg class="ic"><use href="#i-right"/></svg></button>
+</section>
+
+<!-- 12 RECAP -->
+<section class="lesson" id="recap" data-title="Quick reference" data-icon="book" data-tone="t-blue" hidden>
+  <div class="intro">
+    <span class="eyebrow">Quick reference</span>
+    <h2 class="h">The whole course, on eight cards.</h2>
+    <p class="sub">Tap a card to flip it.</p>
+  </div>
+  <div class="flips" id="flips"></div>
+  <div class="card" style="gap:16px">
+    <div class="field" style="max-width:360px;width:100%;align-self:center"><label for="certName">Your name for the certificate</label><input id="certName" placeholder="Type your name" autocomplete="off"></div>
+    <div class="cert">
+      <span class="tile t-blue"><svg class="ic"><use href="#i-award"/></svg></span>
+      <span class="eyebrow">Certificate of completion</span>
+      <div class="cert-name" id="certOut">Your name</div>
+      <p class="muted">has completed <b>Verify Before You Assist</b></p>
+      <div class="cert-meta"><span class="pill" id="certScore"><svg class="ic"><use href="#i-award"/></svg>Assessment: not taken</span><span class="pill" id="certPts"><svg class="ic"><use href="#i-star"/></svg>0 pts</span><span class="pill" id="certDate"><svg class="ic"><use href="#i-cal"/></svg></span></div>
+    </div>
+  </div>
+  <button class="btn primary" id="finishBtn"><svg class="ic"><use href="#i-check"/></svg>Finish course</button>
+</section>
+</div>
+
+<nav class="dock" aria-label="Lessons">
+  <button class="navbtn" id="prevBtn" aria-label="Previous lesson"><svg class="ic"><use href="#i-left"/></svg></button>
+  <span class="sep"></span>
+  <div class="dock-tiles" id="dockTiles"></div>
+  <span class="sep"></span>
+  <button class="navbtn" id="nextBtn" aria-label="Next lesson"><svg class="ic"><use href="#i-right"/></svg></button>
+</nav>
+<canvas id="confetti"></canvas>
+
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const ic=(n,c='')=>`<svg class="ic ${c}"><use href="#i-${n}"/></svg>`;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const KEY='verify-before-you-assist-v2';
+const S={done:[],pts:0,got:{},best:null,name:'',learned:{}};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const restart=el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''};
+const shake=el=>{el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')};
+
+/* ---------- points, toast, confetti ---------- */
+function setPts(bump){$('#ptsN').textContent=S.pts;$('#certPts').innerHTML=ic('star')+S.pts+' pts';if(bump){const p=$('#pts');p.classList.remove('bump');void p.offsetWidth;p.classList.add('bump')}}
+function award(key,n,el){
+  if(S.got[key]||!n)return;S.got[key]=1;S.pts+=n;save();setPts(true);
+  if(el&&!reduce){const r=el.getBoundingClientRect(),p=document.createElement('span');p.className='plus';p.textContent='+'+n;p.style.left=(r.left+r.width/2-14)+'px';p.style.top=(r.top-6)+'px';document.body.appendChild(p);setTimeout(()=>p.remove(),1200)}
+}
+function toast(msg,icon='check'){$$('.toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast';t.innerHTML=ic(icon)+'<span>'+msg+'</span>';document.body.appendChild(t);setTimeout(()=>t.remove(),2700)}
+const cv=$('#confetti'),cx=cv.getContext('2d');let parts=[],raf=null;
+function confetti(n=120){
+  if(reduce)return;cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  const cols=['#0e95ee','#27c9f5','#e11d74','#f97316','#16a34a','#6366f1','#facc15'];
+  for(let i=0;i<n;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*200,y:innerHeight*.45,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*360,vr:(Math.random()-.5)*14,w:6+Math.random()*6,h:8+Math.random()*8,c:cols[i%cols.length],life:0});
+  if(!raf)loop();
+}
+function loop(){
+  cx.clearRect(0,0,innerWidth,innerHeight);
+  parts.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life++;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r*Math.PI/180);cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore()});
+  parts=parts.filter(p=>p.y<innerHeight+40&&p.life<260);
+  raf=parts.length?requestAnimationFrame(loop):(cx.clearRect(0,0,innerWidth,innerHeight),null);
+}
+
+/* ---------- navigation ---------- */
+const lessons=$$('.lesson');let cur=0;
+const dock=$('#dockTiles');
+lessons.forEach((l,i)=>{
+  const b=document.createElement('button');b.className='dt '+l.dataset.tone;b.dataset.i=i;b.setAttribute('aria-label',(i+1)+'. '+l.dataset.title);
+  b.innerHTML=ic(l.dataset.icon)+`<span class="tip">${i+1}. ${l.dataset.title}</span>`;
+  b.onclick=()=>show(i);dock.appendChild(b);
+});
+function paintDock(){
+  $$('.dt',dock).forEach((b,i)=>{
+    b.setAttribute('aria-current',i===cur?'true':'false');
+    const d=S.done.includes(lessons[i].id),badge=$('.done',b);
+    if(d&&!badge)b.insertAdjacentHTML('beforeend',`<span class="done">${ic('check')}</span>`);
+    if(!d&&badge)badge.remove();
+  });
+  $('#prevBtn').disabled=cur===0;$('#nextBtn').disabled=cur===lessons.length-1;
+}
+const hooks={};
+function show(i){
+  if(i<0||i>=lessons.length)return;cur=i;
+  lessons.forEach((l,j)=>l.hidden=j!==i);
+  const l=lessons[i];[...l.children].forEach((c,k)=>c.style.setProperty('--i',k));
+  l.classList.remove('enter');void l.offsetWidth;l.classList.add('enter');
+  $('#nowTxt').textContent=(i+1)+' / '+lessons.length+' · '+l.dataset.title;
+  try{history.replaceState(null,'','#'+l.id)}catch(e){}
+  paintDock();window.scrollTo({top:0});
+  hooks[l.id]&&hooks[l.id]();
+}
+function complete(id){if(!S.done.includes(id)){S.done.push(id);save()}paintDock()}
+$$('[data-next]').forEach(b=>b.onclick=()=>{const id=lessons[cur].id;if(id!=='assessment')complete(id);show(cur+1)});
+$$('[data-goto]').forEach(b=>b.onclick=()=>{complete(lessons[cur].id);show(lessons.findIndex(l=>l.id===b.dataset.goto))});
+$('#prevBtn').onclick=()=>show(cur-1);$('#nextBtn').onclick=()=>show(cur+1);
+
+/* ---------- 1 hero ---------- */
+$$('[data-hero]').forEach(b=>b.onclick=()=>{
+  const r=$('#heroResult');r.hidden=false;restart(r);
+  if(b.dataset.hero==='change'){shake($('#heroMail'));r.className='fbline bad';r.innerHTML=ic('alert')+'<span><b>Data breach.</b> Sam isn\'t on that order. An order number alone proves nothing.</span>'}
+  else{r.className='fbline ok';r.innerHTML=ic('check')+'<span><b>Right instinct.</b> Let\'s learn exactly which checks to run.</span>';award('hero',10,b)}
+});
+
+/* ---------- reusable: swipe deck ---------- */
+function deck(root,{items,left,right,key}){
+  let i=0,score=0,busy=false;
+  root.innerHTML=`<div class="deck-stage"><div class="deck"></div></div>
+    <div class="deck-btns"><button class="btn outline" data-v="${left.v}">${ic('left')}${left.label}</button><button class="btn outline" data-v="${right.v}">${right.label}${ic('right')}</button></div>
+    <div class="fbline info">${ic('flip')}<span>${items.length} cards. Sort each one.</span></div>`;
+  const d=$('.deck',root),fb=$('.fbline',root),btns=$('.deck-btns',root);
+  function render(){
+    d.innerHTML='';
+    if(i>=items.length){
+      d.innerHTML=`<div class="deck-done"><span class="big">${score}/${items.length}</span><span class="score-line">${score===items.length?'Perfect round':'Sorted. Check the ones you missed above.'}</span><button class="btn outline sm" data-again>${ic('refresh')}Play again</button></div>`;
+      btns.hidden=true;award(key,score*5,d);if(score===items.length)confetti(60);
+      $('[data-again]',d).onclick=()=>deck(root,{items,left,right,key});return;
+    }
+    items.slice(i,i+3).forEach((it,k)=>{const c=document.createElement('div');c.className='dcard';c.style.setProperty('--k',k);c.style.zIndex=10-k;c.innerHTML=`<span class="n">Card ${i+k+1} of ${items.length}</span><span>${it.t}</span>`;d.appendChild(c)});
+  }
+  function answer(v){
+    if(busy||i>=items.length)return;busy=true;
+    const it=items[i],ok=it.a===v;if(ok)score++;
+    const top=d.firstElementChild;top.classList.add(v===left.v?'fly-l':'fly-r');
+    $$('.dcard',d).slice(1).forEach((c,k)=>c.style.setProperty('--k',k));
+    fb.className='fbline '+(ok?'ok':'bad');fb.innerHTML=ic(ok?'check':'x')+`<span><b>${ok?'Correct.':'Not quite.'}</b> ${it.why}</span>`;restart(fb);
+    setTimeout(()=>{i++;busy=false;render()},430);
+  }
+  $$('button',btns).forEach(b=>b.onclick=()=>answer(b.dataset.v));
+  render();
+}
+
+/* ---------- reusable: chat flow ---------- */
+function chatFlow(root,steps,key){
+  root.innerHTML='<div class="chat"></div>';const chat=root.firstChild;
+  const typing=cb=>{if(reduce)return cb();const t=document.createElement('div');t.className='bubble cust typing';t.innerHTML='<i></i><i></i><i></i>';chat.appendChild(t);setTimeout(()=>{t.remove();cb()},850)};
+  function finish(endTxt){
+    if(endTxt)chat.insertAdjacentHTML('beforeend',`<div class="fbline ok">${ic('check')}<span>${endTxt}</span></div>`);
+    chat.insertAdjacentHTML('beforeend',`<div class="row"><button class="btn outline sm" data-replay>${ic('refresh')}Replay</button></div>`);
+    $('[data-replay]',chat).onclick=()=>chatFlow(root,steps,key);
+  }
+  function step(n){
+    const s=steps[n];
+    typing(()=>{
+      chat.insertAdjacentHTML('beforeend',`<div class="bubble cust">${s.cust}</div>`);
+      if(!s.opts)return finish(s.end);
+      const box=document.createElement('div');box.className='replies';let wrong=false;
+      box.innerHTML='<span class="who-lbl">Your reply</span>'+s.opts.map((o,k)=>`<button class="reply" data-k="${k}">${o.t}</button>`).join('')+'<div class="fbline" hidden></div>';
+      chat.appendChild(box);
+      $$('.reply',box).forEach(b=>b.onclick=()=>{
+        const o=s.opts[+b.dataset.k],fb=$('.fbline',box);fb.hidden=false;restart(fb);
+        if(o.ok){
+          $$('.reply',box).forEach(x=>x.disabled=true);b.classList.add('right');fb.className='fbline ok';fb.innerHTML=ic('check')+`<span><b>Nice.</b> ${o.why}</span>`;
+          if(!wrong)award(key+n,10,b);
+          setTimeout(()=>{box.remove();chat.insertAdjacentHTML('beforeend',`<div class="bubble agent">${o.t}</div><div class="fbline ok mini">${ic('check')}<span>${o.why}</span></div>`);n+1<steps.length?step(n+1):finish()},1000);
+        }else{wrong=true;b.classList.add('wrong');b.disabled=true;fb.className='fbline bad';fb.innerHTML=ic('x')+`<span>${o.why}</span>`}
+      });
+    });
+  }
+  step(0);
+}
+
+/* ---------- 2 GDPR ---------- */
+deck($('#deckGdpr'),{key:'deckGdpr',left:{v:'no',label:'Not personal'},right:{v:'yes',label:'Personal data'},items:[
+  {t:'Full name',a:'yes',why:'It directly identifies a person.'},
+  {t:'Store opening hours',a:'no',why:'Nothing here relates to a person.'},
+  {t:'Email address',a:'yes',why:'Even a nickname address traces back to its owner.'},
+  {t:'Shipping address',a:'yes',why:'It shows where someone lives or works.'},
+  {t:'A product code on its own',a:'no',why:'Not on its own. Once linked to a buyer, it becomes personal data.'},
+  {t:'Order history',a:'yes',why:'What someone bought is linked to them.'},
+  {t:'Card type + last 4 digits',a:'yes',why:'It belongs to the cardholder.'},
+  {t:'IP address',a:'yes',why:'Online identifiers count under GDPR.'}
+]});
+chatFlow($('#chatAsk'),[{cust:'Hi! Which email do you have on my account? Just checking it\'s right.',opts:[
+  {t:'It\'s layla.h@mailbox.com.',ok:false,why:'That\'s disclosure. We don\'t know who\'s asking yet.'},
+  {t:'Happy to check! Which email did you use? I\'ll confirm whether it matches.',ok:true,why:'The customer tells, we compare. Never the other way round.'},
+  {t:'It starts with "lay...". Does that ring a bell?',ok:false,why:'A hint is still disclosure, and helps someone guess the rest.'}
+]}],'ask');
+hooks.gdpr=()=>{$$('[data-count]').forEach(el=>{const to=+el.dataset.count,pre=el.dataset.pre||'',suf=el.dataset.suf||'';if(reduce)return;const t0=performance.now();const f=t=>{const p=Math.min(1,(t-t0)/1300),e=1-Math.pow(1-p,3);el.textContent=pre+Math.round(to*e)+suf;if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)})};
+
+/* ---------- 3 scan game ---------- */
+(function(){
+  const root=$('#scanGame'),rec={name:'Layla Hassan',order:'BR-30417',from:'layla.h@mailbox.com'};
+  const rounds=[
+    {from:'layla.h@mailbox.com',name:'Layla Hassan',order:'BR-30417',bad:null,why:'All three match the record. She\'s verified, so go ahead and help.'},
+    {from:'l.hassan@workplace.com',name:'Layla Hassan',order:'BR-30417',bad:'from',why:'Different sender. Ask her to reply from the email used to place the order.'},
+    {from:'layla.h@mailbox.com',name:'Layla Hassan',order:null,bad:'order',why:'No order number. Guide her to find it. That\'s the next lesson.'}
+  ];
+  let r=0,done=false,tried=false;
+  root.innerHTML=`<div class="scan">
+    <div class="rec"><span class="mini-lbl">Order record</span><dl class="kv"><dt>Name</dt><dd>${rec.name}</dd><dt>Order</dt><dd>${rec.order}</dd><dt>Email</dt><dd>${rec.from}</dd></dl></div>
+    <div class="inmail"><div class="scanline"></div><div class="row" style="justify-content:space-between"><span class="mini-lbl">Incoming email</span><span class="progress-dots"><i></i><i></i><i></i></span></div><div class="tokens"></div></div>
+  </div>
+  <div class="scan-actions"><span class="hint">Tap the detail that fails, or</span><button class="btn primary" data-ver>${ic('check')}All pass: verified</button></div>
+  <div class="fbline" hidden></div>
+  <div class="row center"><button class="btn outline" data-nextcase hidden>Next case${ic('right')}</button></div>`;
+  const tokens=$('.tokens',root),fb=$('.fbline',root),nx=$('[data-nextcase]',root),ver=$('[data-ver]',root),mail=$('.inmail',root);
+  function render(){
+    const c=rounds[r];done=false;tried=false;fb.hidden=true;nx.hidden=true;ver.disabled=false;
+    $$('.progress-dots i',root).forEach((d,k)=>d.classList.toggle('on',k<=r));
+    tokens.innerHTML=[['from','From',c.from],['name','Signed',c.name],['order','Order no.',c.order]].map(([k,l,v])=>`<button class="token ${v?'':'empty'}" data-f="${k}"><span>${l}</span><span>${v||'Not provided'}</span></button>`).join('');
+    $$('.token',tokens).forEach(t=>t.onclick=()=>check(t.dataset.f,t));
+  }
+  function check(choice,el){
+    if(done)return;const c=rounds[r];fb.hidden=false;restart(fb);
+    if(choice===c.bad){
+      done=true;mail.classList.remove('scanning');void mail.offsetWidth;mail.classList.add('scanning');
+      $$('.token',tokens).forEach(t=>{t.disabled=true;t.classList.add(t.dataset.f===c.bad?'bad':'good')});ver.disabled=true;
+      fb.className='fbline ok';fb.innerHTML=ic('check')+`<span><b>Case ${r+1} cleared.</b> ${c.why}</span>`;
+      if(!tried)award('scan'+r,10,el);
+      if(r<rounds.length-1){nx.hidden=false}else{fb.innerHTML+='';toast('All 3 cases cleared','award');confetti(70)}
+    }else{
+      tried=true;shake(el);fb.className='fbline bad';
+      fb.innerHTML=ic('x')+'<span>'+(choice===null?'Something here doesn\'t match the record. Look again.':'That one matches the record. Look again.')+'</span>';
+    }
+  }
+  ver.onclick=()=>check(null,ver);
+  nx.onclick=()=>{r++;render()};
+  render();
+})();
+
+/* ---------- 4 mail search ---------- */
+(function(){
+  const root=$('#mailSim');
+  const F={inbox:{l:'Inbox',m:[{f:'Weekly Deals',s:'Your weekend deals are here'},{f:'Mum',s:'Dinner on Sunday?'},{f:'Courier Co',s:'Your parcel is on its way'},{f:'City Gym',s:'Class booking confirmed'}]},
+    junk:{l:'Junk',m:[{f:'[Brand]',s:'Order confirmation & purchase receipt',target:1},{f:'Promo Hub',s:'You have WON a prize!!!'}]},
+    spam:{l:'Spam',m:[{f:'Unknown',s:'Claim your parcel now'},{f:'Crypto Max',s:'Double your money today'},{f:'Lottery Desk',s:'Final notice'}]}};
+  const keys=['[Brand]','order confirmation','purchase receipt','parcel','deals'];
+  let folder='inbox',q='',found=false,typer=null;
+  root.innerHTML=`<div class="mailapp"><div class="chrome"><i></i><i></i><i></i><span class="ttl">Mail · layla.h@mailbox.com</span></div>
+    <div class="mailgrid"><div class="folders"></div><div class="mailmain">
+      <div class="searchbar">${ic('search')}<span class="q"><span class="ph">Tap a keyword to search</span></span><span class="caret"></span></div>
+      <div class="kchips">${keys.map(k=>`<button class="kchip" data-k="${k}">${k}</button>`).join('')}</div>
+      <div class="msgs"></div></div></div></div>
+    <div class="fbline info">${ic('search')}<span>Tap a keyword, then check each folder.</span></div>`;
+  const fb=$('.fbline',root),qEl=$('.q',root),msgs=$('.msgs',root);
+  const match=m=>!q||(m.f+' '+m.s).toLowerCase().includes(q.toLowerCase());
+  function folders(){
+    $('.folders',root).innerHTML=Object.entries(F).map(([k,v])=>{const n=v.m.filter(match).length;return `<button class="folder ${k===folder?'on':''}" data-fd="${k}"><span>${v.l}</span><span class="c ${q&&n?'hit':''}">${n}</span></button>`}).join('');
+    $$('.folder',root).forEach(b=>b.onclick=()=>{folder=b.dataset.fd;folders();list()});
+  }
+  function list(){
+    const items=F[folder].m.filter(match);
+    msgs.innerHTML=items.length?items.map((m,i)=>`<button class="msg" data-i="${F[folder].m.indexOf(m)}" style="animation-delay:${i*50}ms"><span class="av">${m.f.replace(/[\[\]]/g,'').charAt(0)}</span><span class="f">${m.f}</span><span class="s">${m.s}</span></button>`).join(''):`<div class="empty">No results in ${F[folder].l}. Try another folder.</div>`;
+    $$('.msg',msgs).forEach(b=>b.onclick=()=>open(F[folder].m[+b.dataset.i],b));
+  }
+  function open(m,el){
+    fb.hidden=false;restart(fb);
+    if(!m.target){shake(el);fb.className='fbline bad';fb.innerHTML=ic('x')+'<span>Not this one. Look for the automatic confirmation from [Brand].</span>';return}
+    found=true;
+    msgs.innerHTML=`<div class="opened"><div class="row" style="justify-content:space-between"><b>[Brand]</b><span class="mini-lbl">Junk</span></div><b style="font-size:18px">Order confirmation &amp; purchase receipt</b><p class="muted">Thank you for your order, Layla! Here's your receipt.</p><div class="ordno"><span class="mini-lbl">Order number</span><b class="mono">BR-30417</b></div><button class="btn outline sm" data-back style="align-self:flex-start">${ic('left')}Back to list</button></div>`;
+    $('[data-back]',msgs).onclick=list;
+    fb.className='fbline ok';fb.innerHTML=ic('check')+'<span><b>Found it, in Junk.</b> That\'s why we always tell customers to check junk and spam too.</span>';
+    award('mail',15,el);
+  }
+  function type(k){
+    clearInterval(typer);q='';
+    $$('.kchip',root).forEach(c=>c.classList.toggle('on',c.dataset.k===k));
+    if(reduce){q=k;qEl.textContent=k;folders();list();return}
+    let n=0;qEl.textContent='';
+    typer=setInterval(()=>{n++;qEl.textContent=k.slice(0,n);if(n>=k.length){clearInterval(typer);q=k;folders();list()}},45);
+  }
+  $$('.kchip',root).forEach(c=>c.onclick=()=>type(c.dataset.k));
+  folders();list();
+})();
+
+/* ---------- reusable: duel ---------- */
+function duel(root,opts,key){
+  root.innerHTML=`<div class="duel">${opts.map((o,i)=>`<button class="duel-opt" data-i="${i}"><span class="mini-lbl">Reply ${'AB'[i]}</span><span>${o.text}</span><span class="tags"></span></button>`).join('')}</div><div class="fbline" hidden></div>`;
+  const fb=$('.fbline',root);let missed=false;
+  $$('.duel-opt',root).forEach(b=>b.onclick=()=>{
+    const o=opts[+b.dataset.i];$('.tags',b).innerHTML=o.tags.map((t,k)=>`<span class="tag ${o.good?'g':'b'}" style="animation-delay:${k*90}ms">${ic(o.good?'check':'x')}${t}</span>`).join('');
+    fb.hidden=false;restart(fb);
+    if(o.good){b.classList.add('good');$$('.duel-opt',root).forEach(x=>{x.disabled=true;if(x!==b)x.classList.add('dim')});fb.className='fbline ok';fb.innerHTML=ic('check')+'<span><b>That\'s the one.</b> It explains why, shows where to look, and covers the other routes.</span>';if(!missed)award(key,10,b)}
+    else{missed=true;b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');b.disabled=true;fb.className='fbline bad';fb.innerHTML=ic('x')+'<span>This one means another round of back-and-forth. Try the other.</span>'}
+  });
+}
+duel($('#duelMissing'),[
+  {text:'"We can\'t help you without an order number. Please provide it."',good:false,tags:['Closed door','No help finding it','No reason given']},
+  {text:'"Happy to help, Layla! To keep your account safe I just need your order number. Search your inbox, junk and spam for "[Brand]", "order confirmation" or "purchase receipt". It\'s near the top. Was it a gift, or bought from one of our sellers? Tell me and I\'ll explain what we need instead."',good:true,tags:['Explains why','Shows where to look','Covers gifts & sellers']}
+],'duel1');
+
+/* ---------- 5 gifts ---------- */
+(function(){
+  const root=$('#authBuilder');
+  const B=[{k:'who',ok:'Omar Farid',msg:'Name the receiver exactly'},{k:'order',ok:'BR-55120',msg:'Name the specific order'},{k:'until',ok:'30 November 2026',msg:'Give a specific end date'}];
+  const pool=['my friend','30 November 2026','BR-55120','whenever he needs','Omar Farid','my order'];
+  let fill={who:null,order:null,until:null},solved=false,miss=false;
+  root.innerHTML=`<div class="compose"><div class="compose-top"><span class="mini-lbl">From</span><b>sara.ali@mailbox.com</b><span class="okpill">${ic('check')}Email on the order</span></div>
+    <p class="sentence">I authorize <button class="blank" data-b="who"></button> to manage order <button class="blank" data-b="order"></button> until <button class="blank" data-b="until"></button>.</p></div>
+    <div class="pool">${pool.map((p,i)=>`<button class="tok" data-i="${i}">${p}</button>`).join('')}</div>
+    <div class="row"><button class="btn primary" data-check disabled>${ic('shield')}Check authorization</button></div>
+    <div class="fbline" hidden></div>`;
+  const fb=$('.fbline',root),chk=$('[data-check]',root);
+  function paint(){
+    B.forEach(b=>{const el=$(`[data-b="${b.k}"]`,root),v=fill[b.k];el.textContent=v===null?'':pool[v];el.classList.toggle('filled',v!==null);el.classList.remove('ok','no')});
+    $$('.tok',root).forEach(t=>t.classList.toggle('used',Object.values(fill).includes(+t.dataset.i)));
+    chk.disabled=solved||Object.values(fill).some(v=>v===null);
+  }
+  $$('.tok',root).forEach(t=>t.onclick=()=>{if(solved)return;const k=B.find(b=>fill[b.k]===null);if(!k)return;fill[k.k]=+t.dataset.i;fb.hidden=true;paint()});
+  $$('.blank',root).forEach(b=>b.onclick=()=>{if(solved)return;fill[b.dataset.b]=null;fb.hidden=true;paint()});
+  chk.onclick=()=>{
+    const wrong=B.filter(b=>pool[fill[b.k]]!==b.ok);
+    B.forEach(b=>$(`[data-b="${b.k}"]`,root).classList.add(pool[fill[b.k]]===b.ok?'ok':'no'));
+    fb.hidden=false;restart(fb);
+    if(!wrong.length){solved=true;chk.disabled=true;fb.className='fbline ok';fb.innerHTML=ic('check')+'<span><b>Valid.</b> From the order email, names Omar, names the order, and gives an end date. You can help Omar until 30 November 2026.</span>';if(!miss)award('auth',20,chk);confetti(70)}
+    else{miss=true;fb.className='fbline bad';fb.innerHTML=ic('x')+'<span>'+wrong.map(w=>w.msg).join(' · ')+'. Tap a blank to clear it.</span>'}
+  };
+  paint();
+})();
+deck($('#deckGift'),{key:'deckGift',left:{v:'no',label:'Not valid'},right:{v:'yes',label:'Valid'},items:[
+  {t:'"Yes, that\'s fine."',a:'no',why:'Who is authorized, and until when?'},
+  {t:'"I authorize Omar Farid to manage order BR-55120 until 30 November 2026."',a:'yes',why:'Names the receiver, the order and a specific date.'},
+  {t:'Purchaser was CC\'d but hasn\'t replied',a:'no',why:'A CC isn\'t a yes. Wait for their reply.'},
+  {t:'"Omar can manage my order."',a:'no',why:'No end date.'},
+  {t:'"He can handle it until it\'s delivered, I guess."',a:'no',why:'It needs a specific date.'}
+]});
+
+/* ---------- 6 receipts ---------- */
+(function(){
+  const root=$('#receiptGame');
+  const R=[
+    {seller:'Fernway Retail',mono:'FR',tone:'t-teal',order:'FW-882041',date:'12 Oct 2026',name:'Daniel Mensah',email:null,item:'Trail Runner Jacket, M',price:'€129.00',ans:'copy'},
+    {seller:'Northgate Outlet',mono:'NO',tone:'t-indigo',order:'NG-20419',date:'3 Sep 2026',name:'Priya Nair',email:'priya.n@mailbox.com',item:'Canvas Weekender Bag',price:'€89.00',ans:'accept'}
+  ];
+  const slots=[['logo','Seller logo','store'],['item','Item purchased','gift'],['date','Date of purchase','cal'],['name','Purchaser name','user'],['email','Purchaser email','mail']];
+  let r=0,done=false;
+  function render(){
+    const c=R[r];done=false;
+    root.innerHTML=`<div class="rgame"><div class="slots">${slots.map(([k,l])=>`<div class="slot" data-s="${k}"><span class="chk">${ic('check')}</span>${l}</div>`).join('')}</div>
+      <div class="receipt">
+        <button class="part logo-part" data-p="logo"><span class="lg ${c.tone}">${c.mono}</span><span><b>${c.seller}</b><br><span class="k">Authorized seller</span></span></button>
+        <hr>
+        <div class="static"><span>Order</span><span class="mono">${c.order}</span></div>
+        <button class="part" data-p="date"><span class="k">Date</span><span class="v">${c.date}</span></button>
+        <button class="part" data-p="name"><span class="k">Customer</span><span class="v">${c.name}</span></button>
+        ${c.email?`<button class="part" data-p="email"><span class="k">Email</span><span class="v">${c.email}</span></button>`:''}
+        <hr>
+        <button class="part" data-p="item"><span class="k">Item</span><span class="v">${c.item}</span></button>
+        <div class="static"><span>Paid</span><span class="mono">${c.price}</span></div>
+      </div></div>
+      <div class="row" style="justify-content:space-between"><span class="mini-lbl">Receipt ${r+1} of ${R.length}</span><div class="row"><button class="btn outline" data-d="copy">${ic('refresh')}Ask for a full copy</button><button class="btn primary" data-d="accept">${ic('check')}Accept proof</button></div></div>
+      <div class="fbline" hidden></div>
+      <div class="row center"><button class="btn outline" data-nr hidden>Next receipt${ic('right')}</button></div>`;
+    $$('.part',root).forEach(p=>p.onclick=()=>{p.classList.add('found');const s=$(`[data-s="${p.dataset.p}"]`,root);if(!s.classList.contains('on')){s.classList.add('on')}});
+    $$('[data-d]',root).forEach(b=>b.onclick=()=>decide(b.dataset.d,b));
+    $('[data-nr]',root).onclick=()=>{r++;render()};
+  }
+  function decide(d,btn){
+    if(done)return;const c=R[r],fb=$('.fbline',root);fb.hidden=false;restart(fb);
+    if(d===c.ans){
+      done=true;$$('[data-d]',root).forEach(b=>b.disabled=true);
+      slots.forEach(([k])=>{const s=$(`[data-s="${k}"]`,root);if(k==='email'&&!c.email){s.classList.remove('on');s.classList.add('miss')}else s.classList.add('on')});
+      fb.className='fbline ok';fb.innerHTML=ic('check')+(c.ans==='copy'?'<span><b>Good catch.</b> No purchaser email. Ask Daniel for the original confirmation, or a fresh copy from Fernway Retail.</span>':'<span><b>Accepted.</b> Logo, item, date, name and email are all there.</span>');
+      award('rcpt'+r,15,btn);
+      if(r<R.length-1)$('[data-nr]',root).hidden=false;else{toast('Receipt inspector: certified','award');confetti(60)}
+    }else{
+      shake(btn);fb.className='fbline bad';fb.innerHTML=ic('x')+(c.ans==='copy'?'<span>Check the five again. One is missing from this receipt.</span>':'<span>Everything\'s here. Tap each detail to confirm all five.</span>');
+    }
+  }
+  render();
+})();
+
+/* ---------- 7 vault ---------- */
+(function(){
+  const Q=[{t:'Full shipping & billing address',ok:1},{t:'Date of birth',ok:0,why:'Not one of our four'},{t:'Amount paid',ok:1},{t:'Full card number',ok:0,why:'Never ask for this'},{t:'Payment method used',ok:1},{t:'Mother\'s maiden name',ok:0,why:'Not one of our four'},{t:'Full name',ok:1},{t:'Account password',ok:0,why:'Never ask for this'}];
+  let got=0,miss=false;
+  const pool=$('#qpool'),fb=$('#vaultFb'),keys=$$('#keys i');
+  pool.innerHTML=Q.map((q,i)=>`<button class="qchip" data-i="${i}"><span>${q.t}</span><small></small></button>`).join('');
+  $$('.qchip',pool).forEach(b=>b.onclick=()=>{
+    const q=Q[+b.dataset.i];b.disabled=true;fb.hidden=false;restart(fb);
+    if(q.ok){got++;b.classList.add('ok');$('small',b).innerHTML=ic('check');keys[got-1].classList.add('on');fb.className='fbline ok';fb.innerHTML=ic('key')+`<span>${got} of 4 keys found.</span>`;
+      if(got===4){$('#vault').classList.add('open');fb.innerHTML=ic('check')+'<span><b>Unlocked.</b> All four answers must match before you help.</span>';$$('.qchip',pool).forEach(x=>x.disabled=true);if(!miss)award('vault',20,b);else award('vault',10,b);confetti(80);
+        const a=$('#advise');a.hidden=false;a.innerHTML=`<div class="advise"><span class="tile t-amber">${ic('user')}</span><div><span class="mini-lbl">Then advise</span><p style="font-size:18px;line-height:26px;font-weight:600">"Create a new account with your correct email for future orders."</p></div></div>`}}
+    else{miss=true;b.classList.add('no');$('small',b).textContent=q.why;fb.className='fbline bad';fb.innerHTML=ic('x')+`<span>${q.why}.</span>`}
+  });
+})();
+
+/* ---------- 8 chat ---------- */
+(function(){
+  const opts=[['coin','Amount paid'],['card','Payment method'],['pin','Shipping & billing address']];let k=0;
+  if(!reduce)setInterval(()=>{if(lessons[cur].id!=='chat')return;k=(k+1)%opts.length;const el=$('#swapTo');if(!el)return;el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip');setTimeout(()=>{el.innerHTML=`<svg class="ic" style="color:var(--blue)"><use href="#i-${opts[k][0]}"/></svg><span>${opts[k][1]}</span>`},250)},2400);
+})();
+chatFlow($('#chatSim'),[
+  {cust:'Hi! Where\'s my order? It was meant to arrive yesterday. I\'m Yousef Karim.',opts:[
+    {t:'Sure! I can see an order for Yousef Karim going to 22 Elm Street. Is that you?',ok:false,why:'That reveals the address before he\'s verified. Ask, don\'t tell.'},
+    {t:'Thanks, Yousef! Could you share your order number and your shipping or billing address, including the postcode?',ok:true,why:'You have his name, so ask for the other two chat checks in one go.'},
+    {t:'Could you tell me the email address on your account?',ok:false,why:'The email check is for the email channel. On chat, ask for order number and address with postcode.'}]},
+  {cust:'It\'s BR-71250. I\'ve just moved house so I honestly can\'t remember which address I used.',opts:[
+    {t:'Without the address I can\'t verify you, sorry. Please contact us again when you find it.',ok:false,why:'Too rigid. Swap in one of the four security questions instead.'},
+    {t:'Was it the Elm Street one?',ok:false,why:'Leading questions give the answer away.'},
+    {t:'No problem, moving is a lot! Could you tell me the total amount you paid for this order instead?',ok:true,why:'Address swapped for a security question he hasn\'t answered yet.'}]},
+  {cust:'Yes, it was €84.50 on my debit card.',end:'<b>Verified.</b> Full name, order number, and amount paid in place of the address. Go check his delivery.'}
+],'chat');
+
+/* ---------- 9 club ---------- */
+(function(){
+  const cols=$('#clubCols');let mode='order';
+  const data={email:{t:'Email',tone:'t-sky',icon:'mail',order:[['user','Full name'],['hash','Order number'],['mail','Sent from the order email']],club:[['user','Full name'],['id','Membership number'],['mail','Sent from the membership email']]},
+              chat:{t:'Chat',tone:'t-green',icon:'chat',order:[['user','Full name'],['hash','Order number'],['pin','Shipping or billing address + ZIP']],club:[['user','Full name'],['id','Membership number'],['pin','Shipping or billing address + ZIP']]}};
+  function render(anim){
+    cols.innerHTML=Object.values(data).map(d=>`<div class="col"><div class="col-h"><span class="tile sm ${d.tone}">${ic(d.icon)}</span>${d.t}</div>${d[mode].map((c,i)=>{const changed=c[1]!==d.order[i][1]||c[1]!==d.club[i][1];return `<div class="ck ${changed&&mode==='club'?'hl':''} ${changed&&anim?'flip':''}">${ic(c[0])}${c[1]}</div>`}).join('')}</div>`).join('');
+  }
+  $$('#clubSeg button').forEach(b=>b.onclick=()=>{if(b.dataset.m===mode)return;mode=b.dataset.m;$$('#clubSeg button').forEach(x=>x.classList.toggle('on',x===b));render(true);if(mode==='club')award('clubseg',5,b)});
+  render(false);
+})();
+chatFlow($('#chatClub'),[{cust:'Hi, my Club points haven\'t updated after my last shop. I\'m Noor Saleh, postcode M14 5RT.',opts:[
+  {t:'What was your most recent order number?',ok:false,why:'It\'s a Club question. Membership number, not order number.'},
+  {t:'Thanks, Noor! Could you share your membership number and the full shipping or billing address that goes with that postcode?',ok:true,why:'Membership number replaces the order number. The rest of the chat check stays.'},
+  {t:'When did you join the Club?',ok:false,why:'Joining date isn\'t part of our checks.'}]}],'club');
+
+/* ---------- 10 template builder ---------- */
+(function(){
+  const sec=[
+    {k:'self',l:'Placed it themselves',h:'You placed the order yourself',b:['Please share your full name and order number, and reply from the email address you used to place the order.','Can\'t find your order number? We send an automatic order confirmation and receipt by email for every online and in-store purchase. Search your inbox, junk and spam folders for "[Brand]", "order confirmation" or "purchase receipt".']},
+    {k:'typo',l:'Email typo',h:'You think the email on your order has a typo',b:['No problem. Please confirm:'],list:['Your full name','Your full shipping and billing address','The total amount paid','The payment method used']},
+    {k:'gift',l:'Gift',h:'The item was a gift',b:['Please ask the person who placed the order to contact us, or add them in CC on this email. They\'ll need to reply confirming that you\'re authorized to manage the order, and until which date. For example: "I authorize [name] to manage order [number] until [date]."']},
+    {k:'seller',l:'Authorized seller',h:'You bought from one of our authorized sellers',b:['Please send us the order confirmation from the seller. It needs to show the seller\'s logo, the item purchased, the date of purchase, and the purchaser\'s name and email. If you can\'t find it, the seller can send you another copy.']},
+    {k:'club',l:'Club membership',h:'Your question is about your [Brand] Club membership',b:['Please share your full name and membership number, and reply from the email address linked to your membership.']}
+  ];
+  const on={self:1,typo:1,gift:1,seller:1,club:1};
+  const tg=$('#tbToggles'),pv=$('#tbPreview'),cu=$('#tbCust'),ag=$('#tbAgent');
+  tg.innerHTML=sec.map(s=>`<button class="tg on" data-k="${s.k}" aria-pressed="true"><span class="sw"></span>${s.l}</button>`).join('');
+  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function build(){
+    const cust=cu.value.trim()||'[Customer name]',agent=ag.value.trim()||'[Your name]',act=sec.filter(s=>on[s.k]);
+    const multi=act.length>1;
+    let html=`<div class="pv-subj">Let's get you verified so we can help</div><p>Hi <span class="fillin" data-fill="cust">${esc(cust)}</span>,</p><p>Thank you for contacting [Brand]. I'm happy to help with this.</p><p>To keep your personal information safe, we always confirm who we're speaking with before discussing any order or account details. It's part of how we protect your data under GDPR.${multi?' Please reply with the option that fits your situation:':''}</p>`;
+    let txt=`Subject: Let's get you verified so we can help\n\nHi ${cust},\n\nThank you for contacting [Brand]. I'm happy to help with this.\n\nTo keep your personal information safe, we always confirm who we're speaking with before discussing any order or account details. It's part of how we protect your data under GDPR.${multi?' Please reply with the option that fits your situation:':''}\n`;
+    act.forEach((s,i)=>{
+      const title=multi?`${i+1}. ${s.h}`:s.h;
+      html+=`<div class="blk" style="animation-delay:${i*60}ms"><b>${title}</b>${s.b.map(p=>`<p>${p}</p>`).join('')}${s.list?`<ul>${s.list.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div>`;
+      txt+=`\n${title}\n${s.b.join('\n')}\n${s.list?s.list.map(x=>'- '+x).join('\n')+'\n':''}`;
+    });
+    if(!act.length)html+=`<div class="fbline info">${ic('alert')}<span>Switch on at least one scenario.</span></div>`;
+    html+=`<p>As soon as I have these details, I'll pick this up straight away.</p><p>Kind regards,<br><span class="fillin" data-fill="agent">${esc(agent)}</span><br>[Brand] Customer Care</p>`;
+    txt+=`\nAs soon as I have these details, I'll pick this up straight away.\n\nKind regards,\n${agent}\n[Brand] Customer Care`;
+    pv.innerHTML=html;return txt;
+  }
+  $$('.tg',tg).forEach(b=>b.onclick=()=>{on[b.dataset.k]=on[b.dataset.k]?0:1;b.classList.toggle('on',!!on[b.dataset.k]);b.setAttribute('aria-pressed',!!on[b.dataset.k]);build()});
+  cu.oninput=()=>{const f=$('[data-fill="cust"]',pv);if(f)f.textContent=cu.value.trim()||'[Customer name]'};
+  ag.oninput=()=>{const f=$('[data-fill="agent"]',pv);if(f)f.textContent=ag.value.trim()||'[Your name]'};
+  $('#tbCopy').onclick=async function(){
+    const txt=build(),lbl=$('span',this);
+    try{await navigator.clipboard.writeText(txt);lbl.textContent='Copied';toast('Email copied','copy');award('copy',5,this)}
+    catch(e){const r=document.createRange();r.selectNodeContents(pv);const s=getSelection();s.removeAllRanges();s.addRange(r);lbl.textContent='Selected: press Ctrl+C'}
+    setTimeout(()=>lbl.textContent='Copy email',2200);
+  };
+  build();
+})();
+
+/* ---------- 11 quiz ---------- */
+(function(){
+  const Q=[
+    {q:'Email from the order address. Full name and order number both match. Next?',o:['Ask for their payment method too, just to be safe','They\'re verified. Go ahead and help','Ask them to contact us on chat instead'],a:1,why:'All three email checks pass. Asking for more collects data we don\'t need.'},
+    {q:'Which details verify a customer on chat?',o:['Full name, order number, shipping or billing address with ZIP/postal code','Full name, order number, and the email on the order','Order number and the last four card digits'],a:0,why:'Name, order number, and an address including ZIP or postal code.'},
+    {q:'The gift purchaser replies in CC: "Sure, go ahead." Now what?',o:['Help the gift receiver, they replied','Help for 14 days, then ask again','Ask them to confirm who is authorized and until which date'],a:2,why:'Authorization names the receiver and gives a specific end date.'},
+    {q:'A seller receipt shows logo, item, date and purchaser name. What\'s missing?',o:['Nothing, it\'s valid','The purchaser\'s email','The amount paid'],a:1,why:'Five things: logo, item, date, purchaser name, purchaser email.'},
+    {q:'Which is NOT one of the four security questions?',o:['Amount paid','Payment method used','Date of birth','Full shipping & billing address'],a:2,why:'The four: shipping & billing address, amount paid, payment method, full name.'},
+    {q:'You verified a customer whose order email had a typo. What do you advise?',o:['Create a new account with the correct email for future orders','Nothing, the case is closed','Keep using the mistyped address'],a:0,why:'A new account means future confirmations reach them.'},
+    {q:'A customer asks about their [Brand] Club membership. What replaces the order number?',o:['Their joining date','Their membership number','Their latest order number'],a:1,why:'For Club questions, it\'s the membership number.'},
+    {q:'On chat, the customer can\'t remember their address. Best move?',o:['Ask them to email in instead','Read out the address on file for them','Ask a security question instead, like amount paid'],a:2,why:'Swap the missing detail for one of the four security questions.'},
+    {q:'"What email address do you have for me?"',o:['Ask which email they used and confirm if it matches','Tell them, it\'s their own data','Share the first three letters'],a:0,why:'Ask, don\'t tell. We confirm a match; we never disclose.'},
+    {q:'Customer can\'t find their order number. First step?',o:['Look it up by name and share it','Guide them to search inbox, junk and spam with our keywords','Close the case until they find it'],a:1,why:'An automatic confirmation and receipt is sent for every order.'}
+  ];
+  const root=$('#quiz');let i,score,streak,ans;
+  function start(){i=0;score=0;streak=0;ans=[];render()}
+  function render(){
+    const q=Q[i];
+    root.innerHTML=`<div class="qtop"><span class="mini-lbl">Case ${i+1} of ${Q.length}</span><span class="streak ${streak>=3?'hot':''}">${ic('bolt')}Streak ${streak}</span></div>
+      <div class="qbar"><span style="width:${i/Q.length*100}%"></span></div>
+      <p class="qq">${q.q}</p>
+      <div class="qopts">${q.o.map((t,k)=>`<button class="reply" data-k="${k}" style="animation-delay:${80+k*70}ms">${t}</button>`).join('')}</div>
+      <div class="fbline" hidden></div>
+      <div class="row"><button class="btn primary" data-qn hidden>${i<Q.length-1?'Next case':'See my result'}${ic('right')}</button></div>`;
+    requestAnimationFrame(()=>{$('.qbar span',root).style.width=(i+1)/Q.length*100+'%'});
+    const fb=$('.fbline',root),nx=$('[data-qn]',root);
+    $$('.reply',root).forEach(b=>b.onclick=()=>{
+      const k=+b.dataset.k,ok=k===q.a;ans.push(ok);
+      $$('.reply',root).forEach(x=>x.disabled=true);
+      $$('.reply',root)[q.a].classList.add('right');if(!ok)b.classList.add('wrong');
+      if(ok){score++;streak++}else streak=0;
+      const st=$('.streak',root);st.innerHTML=ic('bolt')+'Streak '+streak;st.classList.toggle('hot',streak>=3);
+      fb.hidden=false;fb.className='fbline '+(ok?'ok':'bad');fb.innerHTML=ic(ok?'check':'x')+`<span><b>${ok?'Correct.':'Not quite.'}</b> ${q.why}</span>`;
+      if(ok)award('q'+i,10,b);
+      nx.hidden=false;nx.focus({preventScroll:true});
+    });
+    nx.onclick=()=>{i++;i<Q.length?render():result()};
+  }
+  function result(){
+    const pass=score>=8;
+    S.best=Math.max(S.best||0,score);if(pass)complete('assessment');save();updCert();
+    root.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+      <span class="tile ${pass?'t-green':'t-orange'}">${ic(pass?'award':'refresh')}</span>
+      <span class="big">${score}/10</span>
+      <p class="sub">${pass?'Passed. You know how to keep customers safe on every channel.':'You need 8 to pass. Review the misses, then try again.'}</p></div>
+      <ul class="review">${Q.map((q,k)=>`<li class="${ans[k]?'':'miss'}">${ic(ans[k]?'check':'x')}<span>${q.q}</span></li>`).join('')}</ul>
+      <div class="row center"><button class="btn ${pass?'outline':'primary'}" data-retry>${ic('refresh')}Retake</button>${pass?`<button class="btn primary" data-torecap>Get your certificate${ic('right')}</button>`:''}</div>`;
+    $('[data-retry]',root).onclick=start;
+    const tr=$('[data-torecap]',root);if(tr)tr.onclick=()=>show(lessons.length-1);
+    if(pass){confetti(160);toast('Assessment passed','award')}
+  }
+  start();
+})();
+
+/* ---------- 12 recap ---------- */
+(function(){
+  const cards=[
+    ['mail','t-sky','Email',['Full name','Order number','Sent from the order email']],
+    ['search','t-orange','No order number',['Search inbox, junk & spam','"[Brand]", "order confirmation", "purchase receipt"']],
+    ['gift','t-pink','Gift',['Buyer contacts us or is CC\'d','Reply names the receiver','Gives a specific end date']],
+    ['store','t-teal','Authorized seller',['Logo · item · date','Purchaser name & email','Missing? Seller sends a copy']],
+    ['key','t-amber','Email typo',['Shipping & billing address','Amount paid · payment method','Full name','Then: new account']],
+    ['chat','t-green','Chat',['Full name · order number','Shipping or billing address + ZIP','Can\'t recall? Swap in a security question']],
+    ['id','t-indigo','Club',['Membership number replaces order number','Rest of the check stays the same']],
+    ['lock','t-ink','Golden rule',['Ask, don\'t tell','Never read out or hint at data','Checks passed? Stop asking, start helping']]
+  ];
+  $('#flips').innerHTML=cards.map(([i,t,h,b])=>`<button class="fc" aria-pressed="false"><span class="fc-in"><span class="face front"><span class="tile ${t}">${ic(i)}</span><b>${h}</b><small>${ic('flip')}Tap to flip</small></span><span class="face back"><b>${h}</b><ul>${b.map(x=>`<li>${x}</li>`).join('')}</ul></span></span></button>`).join('');
+  $$('.fc').forEach(c=>c.onclick=()=>{c.classList.toggle('on');c.setAttribute('aria-pressed',c.classList.contains('on'))});
+  const nm=$('#certName');nm.value=S.name||'';
+  nm.oninput=()=>{S.name=nm.value;save();updCert()};
+  $('#certDate').innerHTML=ic('cal')+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  $('#finishBtn').onclick=()=>{
+    complete('recap');
+    const missing=lessons.filter(l=>!S.done.includes(l.id)).map(l=>l.dataset.title);
+    if(missing.length){toast('Still to do: '+missing.slice(0,3).join(', ')+(missing.length>3?'…':''),'alert')}
+    else{toast('Course complete. Well done!','award');confetti(200)}
+  };
+})();
+function updCert(){
+  $('#certOut').textContent=(S.name||'').trim()||'Your name';
+  $('#certScore').innerHTML=ic('award')+(S.best==null?'Assessment: not taken':'Best score: '+S.best+'/10');
+}
+
+/* ---------- Learn walkthroughs ---------- */
+const light=(i,t,txt)=>`<span class="light"><span class="tile sm ${t}">${ic(i)}</span>${txt}</span>`;
+const vrow=(ok,txt)=>`<div class="vrow ${ok?'ok':'bad'}">${ic(ok?'check':'x')}<span>${txt}</span></div>`;
+const chips=a=>`<div class="vchips">${a.map((x,k)=>`<span class="pill" style="animation-delay:${k*70}ms">${x}</span>`).join('')}</div>`;
+const tileCap=(i,t,lbl,big)=>`<span class="tile lg ${t}">${ic(i)}</span><div class="vcol" style="gap:2px"><span class="mini-lbl">${lbl}</span><b class="v-big">${big}</b></div>`;
+const LEARN={
+  gdpr:[
+    {t:'What is GDPR?',b:`<p>The <b>General Data Protection Regulation</b> is EU law. It sets the rules for how organisations <b>collect, use, store and share</b> personal data.</p><p>It has applied since <b>25 May 2018</b>, and it protects people in the EU wherever the company handling their data is based.</p>`,v:tileCap('shield','t-purple','In force since','25 May 2018')},
+    {t:'What counts as personal data?',b:`<p>Anything that <b>identifies a person</b>, or can be <b>linked back</b> to them.</p><p>In our cases that's mostly names, email addresses, shipping and billing addresses, order history and payment details.</p>`,v:`<span class="tile lg t-pink">${ic('user')}</span>`+chips(['Full name','Email address','Shipping address','Billing address','Order history','Payment method','IP address'])},
+    {t:'Why we verify',b:`<p>Sharing an order's details with the wrong person, or letting them change it, is a <b>personal data breach</b>.</p><p>Verifying first means we only help the person the data belongs to, or someone they have clearly authorized.</p>`,v:`<div class="bubble cust">Please change the delivery address on order BR-48219.</div><div class="vcol">${vrow(false,'Not the customer? Their parcel and data go to a stranger')}${vrow(true,'Verified first? Safe to help')}</div>`},
+    {t:"The golden rule: ask, don't tell",b:`<p>The customer gives us the details, and we <b>compare</b> them with what we hold.</p><p>Never read out, confirm or hint at the data you're checking, not even part of it.</p>`,v:`<div class="vcol">${vrow(false,'"Your email is layla.h@..."')}${vrow(false,'"It starts with L, right?"')}${vrow(true,'"Which email did you use to order?"')}</div>`}
+  ],
+  email:[
+    {t:'Three checks, every time',b:`<p>As soon as you open an email case, check three things <b>before</b> you look at the request:</p><ul><li><b>Full name</b></li><li><b>Order number</b></li><li>The <b>email address</b> they're writing from</li></ul>`,v:`<div class="vcol">${light('user','t-sky','Full name')}${light('hash','t-indigo','Order number')}${light('mail','t-blue','Sent from the order email')}</div>`},
+    {t:'Name and order number',b:`<p>The name must match the name on the order, and the order number must belong to that customer.</p><p>These two on their own aren't enough. Anyone with a forwarded confirmation or a photo of a receipt could know them.</p>`,v:`<div class="vmail"><span class="mini-lbl">Order record</span><dl class="kv"><dt>Name</dt><dd>Layla Hassan</dd><dt>Order</dt><dd>BR-30417</dd></dl></div>`},
+    {t:'The order email is the key',b:`<p>They must write from the <b>same email address used to place the order</b>.</p><p>Access to that inbox is what shows it's really them.</p>`,v:`<div class="vcol"><span class="mini-lbl">Order placed with</span><b class="mono">layla.h@mailbox.com</b>${vrow(true,'Writes from layla.h@mailbox.com')}${vrow(false,'Writes from l.hassan@workplace.com')}</div>`},
+    {t:'All three, or not yet',b:`<p><b>All three must match.</b> Two out of three is not verified.</p><p>Something missing? Don't refuse. Tell the customer what you need and how to find it. The next lessons show you how.</p>`,v:`<div class="vcol">${vrow(true,'Full name matches')}${vrow(true,'Sent from the order email')}${vrow(false,'No order number')}<span class="pill">${ic('right')}Not yet: guide them to find it</span></div>`}
+  ],
+  missing:[
+    {t:'They almost always have it',b:`<p>Every order, <b>online or in store</b>, triggers an <b>automatic email</b> with the order confirmation and the receipt.</p><p>The order number is in that email. Customers usually just don't know where it went.</p>`,v:`<div class="vmail"><div class="row" style="justify-content:space-between"><b>[Brand]</b><span class="mini-lbl">Automatic</span></div><span>Order confirmation &amp; purchase receipt</span><div class="ordno"><span class="mini-lbl">Order number</span><b class="mono">BR-30417</b></div></div>`},
+    {t:'Point them to every folder',b:`<p>Ask them to search their <b>inbox</b>, and their <b>junk</b> and <b>spam</b> folders too. Automated emails often get filtered.</p>`,v:`<span class="tile lg t-orange">${ic('search')}</span>`+chips([ic('mail')+'Inbox',ic('alert')+'Junk',ic('x')+'Spam'])},
+    {t:'Give them the keywords',b:`<p>Searching for any of these should bring the email up:</p><ul><li>"[Brand]"</li><li>"order confirmation"</li><li>"purchase receipt"</li></ul>`,v:`<div class="searchbar" style="width:100%;max-width:340px;background:#fff">${ic('search')}<span>order confirmation</span><span class="caret"></span></div>`+chips(['[Brand]','order confirmation','purchase receipt'])},
+    {t:'Still nothing? Two likely reasons',b:`<p><b>It was a gift.</b> The confirmation went to the person who bought it.</p><p><b>It was bought from an authorized seller.</b> The seller sent the confirmation, not us.</p><p>Each has its own route, which you'll learn next.</p>`,v:`<div class="vrowx"><span class="tile lg t-pink">${ic('gift')}</span><span class="tile lg t-teal">${ic('store')}</span></div><div class="vrowx"><span class="pill">Gift</span><span class="pill">Authorized seller</span></div>`},
+    {t:'Put it together in your reply',b:`<p>A great reply does five things:</p><ol class="marks"><li>Says why you need it</li><li>Says where to look</li><li>Gives the keywords</li><li>Mentions the gift and seller routes</li><li>Ends with a clear next step</li></ol>`,v:`<div class="bubble agent" style="font-size:14px;line-height:21px">Happy to help, Layla! <span class="mk">1</span>To keep your account safe I just need your order number. <span class="mk">2</span>Search your inbox, junk and spam <span class="mk">3</span>for "[Brand]", "order confirmation" or "purchase receipt". <span class="mk">4</span>Was it a gift, or bought from one of our sellers? Let me know. <span class="mk">5</span>Then reply here and I'll take it from there.</div>`}
+  ],
+  gifts:[
+    {t:'Who is the customer?',b:`<p>The <b>person who placed the order</b> is the customer on record.</p><p>A gift receiver can't be verified on their own, however genuine they sound.</p>`,v:`<div class="vrowx"><div class="vcol" style="width:auto"><span class="tile lg t-sky">${ic('user')}</span><span class="pill">Purchaser: the customer</span></div><div class="vcol" style="width:auto"><span class="tile lg t-pink">${ic('gift')}</span><span class="pill">Receiver: needs permission</span></div></div>`},
+    {t:'Two ways to get permission',b:`<p><b>1.</b> Kindly ask the receiver to have the original purchaser contact us directly.</p><p><b>2.</b> Loop the original purchaser into the email thread by <b>CC</b>.</p>`,v:`<div class="vmail"><dl class="kv"><dt>From</dt><dd>omar.f@mailbox.com</dd><dt>CC</dt><dd style="color:var(--blue)">sara.ali@mailbox.com</dd><dt>Subject</dt><dd>My gift order</dd></dl></div><span class="pill">${ic('mail')}Purchaser looped in</span>`},
+    {t:'The purchaser must reply',b:`<p>The original purchaser has to <b>reply</b> with their authorization: <b>who</b> can act, on <b>which order</b>.</p><p>Being CC'd without replying is not permission.</p>`,v:`<div class="vcol">${vrow(false,"CC'd, but no reply")}${vrow(false,'"Yes, that\'s fine."')}${vrow(true,'"I authorize Omar Farid to manage order BR-55120..."')}</div>`},
+    {t:'For how long?',b:`<p>The authorization must say <b>how long</b> it lasts, with a <b>specific date</b>.</p><p>Only act on the order up to that date.</p>`,v:tileCap('cal','t-orange','Authorized until','30 November 2026')},
+    {t:'How to word it',b:`<p>Be warm, explain it protects the purchaser, offer both routes, and give the exact sentence the purchaser needs to send.</p>`,v:`<div class="vcol">${vrow(false,'"This order isn\'t under your name, so we can\'t help."')}<div class="bubble agent" style="font-size:14px;line-height:21px">What a lovely gift, Omar! As someone else placed the order, I need their OK first so their details stay protected. Add them in CC, or ask them to contact us. They just need to reply: "I authorize Omar Farid to manage order BR-55120 until 30 November 2026."</div></div>`},
+    {t:'What a valid reply looks like',b:`<p>It comes from the purchaser, and it names the receiver, the order and an end date.</p>`,v:`<div class="vmail"><dl class="kv"><dt>From</dt><dd>sara.ali@mailbox.com</dd></dl><span>I'm Sara Ali and I placed order BR-55120. I authorize Omar Farid to manage this order until 30 November 2026.</span></div>`+chips([ic('check')+'From purchaser',ic('check')+'Names receiver',ic('check')+'End date'])}
+  ],
+  sellers:[
+    {t:'Where the confirmation comes from',b:`<p>If the customer bought from one of our <b>authorized sellers</b>, the order confirmation came from <b>the seller</b>, not from us.</p><p>Ask them to look for that confirmation.</p>`,v:`<div class="vrowx"><span class="tile lg t-teal">${ic('store')}</span><svg class="ic" style="color:var(--blue);width:28px;height:28px"><use href="#i-right"/></svg><span class="tile lg t-sky">${ic('mail')}</span></div><span class="pill">Seller sends the confirmation</span>`},
+    {t:"Can't find it?",b:`<p>Kindly refer them back to the authorized seller, who can send them <b>another copy</b>.</p>`,v:tileCap('refresh','t-teal','Ask the seller for','Another copy')},
+    {t:'Five things the proof must show',b:`<ol class="marks"><li>The seller's <b>logo</b></li><li>The <b>item</b> purchased</li><li>The <b>date</b> of purchase</li><li>The purchaser's <b>name</b></li><li>The purchaser's <b>email</b></li></ol><p>If any one is missing, it's not enough yet.</p>`,v:`<div class="vmail"><div class="row"><span class="mk">1</span><span class="tile sm t-teal" style="font-weight:800;font-size:13px">FR</span><b>Fernway Retail</b></div><div><span class="mk">2</span>Trail Runner Jacket, M</div><div><span class="mk">3</span>12 Oct 2026</div><div><span class="mk">4</span>Daniel Mensah</div><div><span class="mk">5</span>daniel.m@mailbox.com</div></div>`},
+    {t:'How to word it',b:`<p>Tell them exactly what the confirmation needs to show, and where to get it.</p>`,v:`<div class="bubble agent" style="font-size:14px;line-height:21px">Thanks, Daniel! To verify the purchase, the confirmation needs the seller's logo, the item, the date, and the purchaser's name and email. Could you check for the one from Fernway Retail? If you can't find it, they'll be happy to send another copy.</div>`}
+  ],
+  typo:[
+    {t:'What a typo case looks like',b:`<p>The customer <b>typed their email wrong</b> when placing the order. They write in from their real address, so the email check can never pass.</p>`,v:`<div class="typo"><span class="mini-lbl">Email on the order</span><span class="addr mono">layla.h@mail<mark>bx</mark>.com</span><span class="mini-lbl" style="margin-top:8px">Writing in from</span><span class="addr mono">layla.h@mail<mark class="okm">box</mark>.com</span></div>`},
+    {t:'Ask four security questions',b:`<p>Instead, ask all four:</p><ul><li>Full <b>shipping and billing address</b></li><li><b>Amount paid</b></li><li><b>Payment method</b> used</li><li>Their <b>full name</b></li></ul><p><b>All four must match.</b></p>`,v:`<div class="vcol">${light('pin','t-teal','Shipping & billing address')}${light('coin','t-amber','Amount paid')}${light('card','t-indigo','Payment method')}${light('user','t-sky','Full name')}</div>`},
+    {t:'How to word it',b:`<p>Kindly explain why you're asking, then ask all four in one message.</p>`,v:`<div class="bubble agent" style="font-size:14px;line-height:21px">Thanks, Layla! The email on this order looks slightly different, so I'll verify you another way. Could you confirm your full name, full shipping and billing address, the total amount paid, and the payment method you used?</div>`},
+    {t:'Then fix it for the future',b:`<p>Once verified, advise them to <b>create a new account</b> with the correct email address for future orders, so their confirmations reach them.</p>`,v:tileCap('user','t-amber','Then advise','A new account')}
+  ],
+  chat:[
+    {t:'Why chat is different',b:`<p>On chat we <b>can't see which email address</b> the customer is using, so the email check doesn't work here.</p>`,v:`<div class="vrowx"><span class="tile lg t-green">${ic('chat')}</span><span class="tile lg t-gray" style="opacity:.5">${ic('mail')}</span></div><span class="pill">${ic('x')}No sender email on chat</span>`},
+    {t:'The chat checks',b:`<ul><li><b>Full name</b></li><li><b>Order number</b></li><li><b>Shipping or billing address</b>, including the <b>ZIP or postal code</b></li></ul>`,v:`<div class="vcol">${light('user','t-green','Full name')}${light('hash','t-indigo','Order number')}${light('pin','t-teal','Shipping or billing address + ZIP')}</div>`},
+    {t:"Can't recall one?",b:`<p>Replace the missing detail with one of the <b>four security questions</b> from the typo case: shipping and billing address, amount paid, payment method, or full name.</p><p>Pick one they haven't already given.</p>`,v:`<span class="mini-lbl">Can't recall the address?</span><div class="swapper"><span class="pill strike">Address + ZIP</span><svg class="ic" style="color:var(--blue)"><use href="#i-right"/></svg><span class="swapchip" id="swapTo"><svg class="ic" style="color:var(--blue)"><use href="#i-coin"/></svg><span>Amount paid</span></span></div>`},
+    {t:'What it sounds like',b:`<p>Ask for everything you need in one message, and never hint at the answer.</p>`,v:`<div class="vcol" style="align-items:stretch"><div class="bubble cust">Hi, where's my order? I'm Yousef Karim.</div><div class="bubble agent" style="align-self:flex-end">Thanks, Yousef! Could you share your order number and your shipping or billing address, including the postcode?</div></div>`}
+  ],
+  club:[
+    {t:'Club question? One swap',b:`<p>When a customer needs help with their <b>[Brand] Club membership</b>, they give their <b>membership number instead of the order number</b>.</p>`,v:`<div class="swapper"><span class="pill strike">${ic('hash')}Order number</span><svg class="ic" style="color:var(--blue)"><use href="#i-right"/></svg><span class="swapchip">${ic('id')}Membership number</span></div>`},
+    {t:'Everything else stays the same',b:`<p><b>Email:</b> full name, membership number, and writing from the email linked to the membership.</p><p><b>Chat:</b> full name, membership number, and shipping or billing address with ZIP or postal code.</p><p>Use the switch below to compare.</p>`,v:`<div class="vrowx"><span class="tile lg t-sky">${ic('mail')}</span><span class="tile lg t-green">${ic('chat')}</span></div><span class="pill">${ic('id')}Same checks, one swap</span>`}
+  ],
+  template:[
+    {t:'When to send it',b:`<p>Use it when a customer writes in and you can't tell yet which situation they're in.</p><p>One reply covers every route, so they get verified first time instead of after three rounds.</p>`,v:tileCap('mail','t-gray','First reply','One email, every route')},
+    {t:"What's inside",b:`<p>A one-line reason (GDPR), then one option per situation:</p><ul><li>Placed the order themselves</li><li>Email typo</li><li>Gift</li><li>Authorized seller</li><li>Club membership</li></ul>`,v:chips([ic('user')+'Self',ic('key')+'Typo',ic('gift')+'Gift',ic('store')+'Seller',ic('id')+'Club'])},
+    {t:'How to use the builder',b:`<p>Add the customer's name and yours, switch off anything that clearly doesn't apply, then copy and send.</p>`,v:tileCap('pen','t-ink','Personalise','Toggle, copy, send'),final:'Try the builder'}
+  ]
+};
+function stepper(key,steps){
+  const root=$('#learn-'+key),lesson=$('#'+key);let i=0;
+  const hasGate=$$('.card.gated',lesson).length>0||S.learned[key];
+  root.innerHTML=`<div class="phase"><span class="ph-n">1</span><div><span class="mini-lbl">First</span><b>Learn</b></div></div>
+    <div class="lgrid"><div class="lv"></div><div class="lt"><div class="lbars">${steps.map((_,k)=>`<button data-k="${k}" aria-label="Step ${k+1}"></button>`).join('')}</div><span class="mini-lbl lcount"></span><h3></h3><div class="lbody"></div>
+    <div class="row lnav"><button class="btn outline sm" data-lb>${ic('left')}Back</button><button class="btn primary sm" data-ln></button></div></div></div>`;
+  const lv=$('.lv',root),h=$('h3',root),body=$('.lbody',root),cnt=$('.lcount',root),back=$('[data-lb]',root),nx=$('[data-ln]',root);
+  function go(k){
+    i=k;const s=steps[i],last=i===steps.length-1;
+    lv.innerHTML=s.v;[...lv.children].forEach((c,j)=>c.style.setProperty('--j',j));
+    h.textContent=s.t;body.innerHTML=s.b;restart(h);restart(body);
+    cnt.textContent=`Step ${i+1} of ${steps.length}`;
+    $$('.lbars button',root).forEach((b,j)=>b.classList.toggle('on',j<=i));
+    back.disabled=i===0;
+    nx.innerHTML=last?`${ic('check')}${steps[i].final||(hasGate?'Got it. Start the knowledge check':'Got it')}`:`Next${ic('right')}`;
+  }
+  $$('.lbars button',root).forEach(b=>b.onclick=()=>go(+b.dataset.k));
+  back.onclick=()=>go(i-1);
+  nx.onclick=()=>{if(i<steps.length-1)return go(i+1);unlock(key,nx)};
+  go(0);
+}
+function unlock(key,btn){
+  S.learned[key]=1;save();award('learn-'+key,5,btn);
+  const l=$('#'+key),g=$$('.card.gated',l);g.forEach(c=>c.classList.remove('gated'));
+  const target=$('.phase.check',l)||$('#learn-'+key).nextElementSibling;
+  if(g.length)toast('Knowledge check unlocked','check');
+  if(target)target.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+}
+lessons.forEach(l=>{
+  const lc=$('.card.learn',l);if(!lc)return;
+  let after=false,first=null;
+  [...l.children].forEach(c=>{if(c===lc){after=true;return}if(after&&c.classList.contains('card')){c.classList.add('gated');first=first||c}});
+  if(first)first.insertAdjacentHTML('beforebegin',`<div class="phase check"><span class="ph-n">2</span><div><span class="mini-lbl">Then</span><b>Knowledge check</b></div></div>`);
+  if(S.learned[l.id])$$('.card.gated',l).forEach(c=>c.classList.remove('gated'));
+});
+Object.entries(LEARN).forEach(([k,steps])=>stepper(k,steps));
+
+/* ---------- boot ---------- */
+setPts(false);updCert();
+const h=lessons.findIndex(l=>'#'+l.id===location.hash);
+show(h>=0?h:0);
+})();
+</script>
+
+</body></html>
