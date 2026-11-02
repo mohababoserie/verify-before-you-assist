@@ -1,4 +1,15 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Interactive training course on customer verification and GDPR for customer care teams.">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
 <title>Verify Before You Assist</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,7 +73,7 @@ b{font-weight:600}
 
 /* Lesson */
 .lesson{display:flex;flex-direction:column;align-items:center;gap:48px;padding-top:40px}
-.lesson.enter > *{animation:rise .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 90ms)}
+.lesson.enter > *,.ipanel.enter > *,.signin.enter > *{animation:rise .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 90ms)}
 .intro{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;max-width:760px}
 .eyebrow{font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--blue)}
 .h{font-size:48px;line-height:52px;letter-spacing:-1.2px;font-weight:700}
@@ -373,6 +384,82 @@ b{font-weight:600}
 .cert-name{font-size:48px;line-height:52px;letter-spacing:-1.2px;font-weight:700;min-height:52px;overflow-wrap:anywhere}
 .cert-meta{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 
+/* Instructor dashboard */
+.topright{display:flex;align-items:center;gap:8px;flex:none}
+.note-share{display:flex;align-items:center;gap:6px;font-size:14px;line-height:20px;color:var(--smoke);text-align:center}
+.note-share .ic{width:14px;height:14px}
+.ipanel{display:flex;flex-direction:column;align-items:center;gap:40px;padding-top:40px}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;width:100%}
+.kpis .stat{padding:24px;gap:8px}
+.kpis .num{font-size:40px;line-height:44px;letter-spacing:-1px}
+.kpis .num small{font-size:18px;letter-spacing:0;color:var(--smoke);font-weight:600}
+.dash-tools{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+.search{height:40px;border-radius:9999px;border:1px solid var(--mist);padding:0 16px;font-size:14px;width:260px;max-width:100%;background:#fff}
+.search:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(14,149,238,.15)}
+.tablewrap{overflow-x:auto;border:1px solid var(--mist);border-radius:20px}
+table.dt{width:100%;border-collapse:collapse;min-width:860px;font-size:14px}
+.dt th{text-align:left;font-size:12px;line-height:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--smoke);font-weight:600;padding:12px 16px;background:var(--paper);border-bottom:1px solid var(--mist);white-space:nowrap}
+.dt th button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.dt th button:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+.dt th[aria-sort] button{color:var(--ink)}
+.dt td{padding:12px 16px;border-bottom:1px solid var(--mist);vertical-align:middle;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dt tr:last-child td{border-bottom:0}
+.dt tbody tr{animation:pop .3s both}
+.dt tbody tr:hover td{background:var(--paper)}
+.who{display:flex;align-items:center;gap:10px;min-width:0}
+.who img{width:32px;height:32px;border-radius:50%;flex:none}
+.who b{display:block;font-weight:600}
+.who small{display:block;color:var(--smoke);font-size:12px;line-height:16px}
+.mbar{display:flex;align-items:center;gap:8px}
+.mbar i{display:block;width:72px;height:6px;border-radius:9999px;background:var(--mist);overflow:hidden}
+.mbar i b{display:block;height:100%;background:var(--blue)}
+.st{display:inline-flex;align-items:center;gap:6px;border-radius:9999px;padding:4px 10px;font-size:12px;line-height:16px;font-weight:600;white-space:nowrap}
+.st .ic{width:12px;height:12px}
+.st.ok{background:var(--ok-soft);color:var(--ok-ink)}
+.st.bad{background:var(--bad-soft);color:var(--bad-ink)}
+.st.mid{background:var(--paper);color:var(--graphite);border:1px solid var(--mist)}
+.dash-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:100%}
+.bars{display:flex;flex-direction:column;gap:12px}
+.barrow{display:grid;grid-template-columns:minmax(0,1fr) 140px 48px;gap:12px;align-items:center;font-size:14px;line-height:20px}
+.barrow .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.barrow .lbl b{font-weight:600;margin-right:4px}
+.track{height:10px;border-radius:9999px;background:var(--paper);border:1px solid var(--mist);overflow:hidden}
+.track b{display:block;height:100%;background:var(--ocean);border-radius:9999px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.pct{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.empty-state{text-align:center;padding:32px 16px;color:var(--graphite);display:flex;flex-direction:column;align-items:center;gap:12px;font-size:15px;line-height:23px}
+@media (max-width:860px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.dash-grid{grid-template-columns:1fr}}
+@media (max-width:680px){.barrow{grid-template-columns:minmax(0,1fr) 80px 44px}.search{width:100%}.kpis .num{font-size:32px;line-height:36px}}
+
+/* Trainee list (fits any width via container queries) */
+.page.wide{max-width:1280px}
+.sortby{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--smoke)}
+.sortby select{height:40px;border-radius:9999px;border:1px solid var(--mist);padding:0 14px;font-size:14px;background:#fff;color:var(--ink)}
+.tlist{container-type:inline-size;border:1px solid var(--mist);border-radius:20px;overflow:hidden}
+.thead,.trow{display:grid;grid-template-columns:minmax(200px,2.2fr) minmax(120px,1.3fr) .7fr .7fr .9fr minmax(130px,1.2fr) 1.2fr 1fr;gap:16px;align-items:center;padding:14px 20px}
+.thead{background:var(--paper);font-size:12px;line-height:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--smoke);font-weight:600}
+.trow{border-top:1px solid var(--mist);font-size:15px;line-height:22px;font-variant-numeric:tabular-nums;animation:pop .3s both}
+.thead + .trow{border-top:0}
+.trow:hover{background:var(--paper)}
+.trow .who b{font-size:15px}
+.ini{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.c{min-width:0;overflow-wrap:anywhere}
+.c::before{display:none}
+@container (max-width:860px){
+  .thead{display:none}
+  .trow{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:14px;border-top:1px solid var(--mist)}
+  .thead + .trow{border-top:0}
+  .trow .who{grid-column:1/-1}
+  .c::before{display:block;content:attr(data-l);font-size:12px;line-height:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--smoke);font-weight:600;margin-bottom:2px}
+}
+@container (max-width:440px){.trow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Sign-in */
+.signin{display:flex;flex-direction:column;align-items:center;gap:32px;padding-top:40px}
+.signin-card{max-width:480px;gap:16px}
+.signin-card .btn{width:100%}
+.act-title{font-size:24px;line-height:32px;font-weight:700}
+#whoBtn span{max-width:140px;overflow:hidden;text-overflow:ellipsis}
+
 /* Learn walkthrough */
 .phase{display:flex;align-items:center;gap:12px;align-self:flex-start}
 .phase > div{display:flex;flex-direction:column;line-height:20px}
@@ -499,6 +586,8 @@ b{font-weight:600}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
 </style>
+</head>
+<body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
@@ -528,6 +617,8 @@ b{font-weight:600}
   <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-flip" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></symbol>
 </svg>
 
@@ -535,8 +626,26 @@ b{font-weight:600}
   <header class="topbar">
     <div class="wordmark"><span class="tile sm t-blue"><svg class="ic"><use href="#i-shield"/></svg></span>VERIFY</div>
     <div class="now"><span class="dot"></span><span id="nowTxt">Welcome</span></div>
-    <div class="pts" id="pts" title="Points earned"><svg class="ic"><use href="#i-star"/></svg><span id="ptsN">0</span> pts</div>
+    <div class="topright"><button class="btn outline sm" id="whoBtn" hidden title="Change your details"><svg class="ic"><use href="#i-user"/></svg><span></span></button><span class="pill" id="instPill" hidden><svg class="ic"><use href="#i-award"/></svg>Instructor</span><div class="pts" id="pts" title="Points earned"><svg class="ic"><use href="#i-star"/></svg><span id="ptsN">0</span> pts</div></div>
   </header>
+
+<!-- SIGN IN (trainees) -->
+<section class="signin" id="signin" hidden>
+  <div class="intro">
+    <span class="tile lg t-blue"><svg class="ic"><use href="#i-shield"/></svg></span>
+    <span class="eyebrow">Verify Before You Assist</span>
+    <h2 class="h">Sign in to start.</h2>
+    <p class="sub">Tell us who you are so your progress, scores and certificate are saved under your name.</p>
+  </div>
+  <form class="card signin-card" id="signinForm" novalidate>
+    <div class="field"><label for="tName">Full name</label><input id="tName" autocomplete="name" placeholder="e.g. Layla Hassan"></div>
+    <div class="field"><label for="tEmail">Work email</label><input id="tEmail" type="email" autocomplete="email" placeholder="name@company.com"></div>
+    <div class="fbline bad" id="signinErr" hidden></div>
+    <button class="btn primary" type="submit">Start the course<svg class="ic"><use href="#i-right"/></svg></button>
+    <p class="note-share" style="justify-content:center"><svg class="ic"><use href="#i-lock"/></svg><span>Your name, email, progress and scores are shared only with your trainer.</span></p>
+  </form>
+  <div class="row center"><button class="btn outline sm" type="button" id="signoutBtn" hidden><svg class="ic"><use href="#i-left"/></svg>Sign out</button><button class="btn outline sm" type="button" id="toInstructor"><svg class="ic"><use href="#i-award"/></svg>Instructor login</button></div>
+</section>
 
 <!-- 1 WELCOME -->
 <section class="lesson hero" id="welcome" data-title="Welcome" data-icon="shield" data-tone="t-blue">
@@ -561,6 +670,7 @@ b{font-weight:600}
   <p class="sub" style="text-align:center">Hands-on practice for keeping customer data safe on every channel.</p>
   <div class="meta"><span class="pill"><svg class="ic"><use href="#i-book"/></svg>12 lessons</span><span class="pill"><svg class="ic"><use href="#i-bolt"/></svg>~30 min</span><span class="pill"><svg class="ic"><use href="#i-book"/></svg>Learn, then practise</span><span class="pill"><svg class="ic"><use href="#i-award"/></svg>Pass 8/10</span><span class="pill"><svg class="ic"><use href="#i-star"/></svg>Earn points</span></div>
   <button class="btn primary" data-next>Start the course<svg class="ic"><use href="#i-right"/></svg></button>
+  <p class="note-share" id="shareNote" hidden><svg class="ic"><use href="#i-shield"/></svg><span>Your lesson progress and assessment scores are shared with your trainer.</span></p>
 </section>
 
 <!-- 2 GDPR -->
@@ -765,7 +875,7 @@ b{font-weight:600}
   <div class="intro">
     <span class="eyebrow">Quick reference</span>
     <h2 class="h">The whole course, on eight cards.</h2>
-    <p class="sub">Tap a card to flip it.</p>
+    <p class="sub">Tap a card to flip it. When you're ready, submit your results at the bottom of this page.</p>
   </div>
   <div class="flips" id="flips"></div>
   <div class="card" style="gap:16px">
@@ -778,7 +888,52 @@ b{font-weight:600}
       <div class="cert-meta"><span class="pill" id="certScore"><svg class="ic"><use href="#i-award"/></svg>Assessment: not taken</span><span class="pill" id="certPts"><svg class="ic"><use href="#i-star"/></svg>0 pts</span><span class="pill" id="certDate"><svg class="ic"><use href="#i-cal"/></svg></span></div>
     </div>
   </div>
-  <button class="btn primary" id="finishBtn"><svg class="ic"><use href="#i-check"/></svg>Finish course</button>
+  <div class="fbline" id="submitFb" hidden style="width:100%;max-width:640px"></div>
+  <button class="btn primary" id="finishBtn"><svg class="ic"><use href="#i-mail"/></svg><span>Submit my results</span></button>
+</section>
+
+<!-- INSTRUCTOR -->
+<section class="ipanel" id="instructor" hidden>
+  <form class="card signin-card" id="instLogin" novalidate>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+      <span class="tile lg t-ink"><svg class="ic"><use href="#i-lock"/></svg></span>
+      <span class="eyebrow">Instructor login</span>
+      <h3 class="act-title">Sign in to the dashboard</h3>
+    </div>
+    <div class="field"><label for="iEmail">Email</label><input id="iEmail" type="email" autocomplete="username" placeholder="name@company.com"></div>
+    <div class="field"><label for="iPass">Password</label><input id="iPass" type="password" autocomplete="current-password"></div>
+    <div class="fbline" id="instMsg" hidden></div>
+    <button class="btn primary" type="submit" id="instSignIn"><svg class="ic"><use href="#i-shield"/></svg><span>Log in</span></button>
+    <button class="btn outline sm" type="button" id="instBackCourse" style="width:auto;align-self:center"><svg class="ic"><use href="#i-left"/></svg>Back to course</button>
+  </form>
+  <div class="intro" data-dash hidden>
+    <span class="eyebrow">Instructor</span>
+    <h2 class="h">Team results</h2>
+    <p class="sub" id="dashStatus">Loading results…</p>
+  </div>
+  <div class="row center" data-dash hidden><button class="btn primary" id="exportBtn" disabled><svg class="ic"><use href="#i-copy"/></svg><span>Export to Excel</span></button><button class="btn outline" id="dashRefresh"><svg class="ic"><use href="#i-refresh"/></svg>Refresh</button><button class="btn outline" id="pwBtn"><svg class="ic"><use href="#i-key"/></svg>Change password</button><button class="btn outline" id="instLogout"><svg class="ic"><use href="#i-left"/></svg>Log out</button></div>
+  <form class="card signin-card" id="pwForm" hidden novalidate>
+    <div class="act-head"><span class="tile t-ink"><svg class="ic"><use href="#i-key"/></svg></span><div><span class="eyebrow">Security</span><h3>Change password</h3></div></div>
+    <div class="field"><label for="pwCur">Current password</label><input id="pwCur" type="password" autocomplete="current-password"></div>
+    <div class="field"><label for="pwNew">New password</label><input id="pwNew" type="password" autocomplete="new-password" placeholder="At least 10 characters"></div>
+    <div class="field"><label for="pwConf">Confirm new password</label><input id="pwConf" type="password" autocomplete="new-password"></div>
+    <div class="fbline" id="pwMsg" hidden></div>
+    <div class="row"><button class="btn primary" type="submit" style="width:auto">Save password</button><button class="btn outline" type="button" id="pwCancel" style="width:auto">Cancel</button></div>
+  </form>
+  <div class="kpis" id="kpis" data-dash hidden></div>
+  <div class="card" data-dash hidden>
+    <div class="act-head"><span class="tile t-blue"><svg class="ic"><use href="#i-user"/></svg></span><div><span class="eyebrow">Trainees</span><h3>Who did what</h3></div></div>
+    <div class="dash-tools">
+      <input class="search" id="dashSearch" type="search" placeholder="Search by name or email" autocomplete="off">
+      <div class="seg" id="dashFilter"><button class="on" data-f="all">All</button><button data-f="passed">Passed</button><button data-f="failed">Not passed</button><button data-f="none">In progress</button></div>
+      <label class="sortby" for="dashSort">Sort by<select id="dashSort"><option value="updatedAt">Last active</option><option value="name">Name</option><option value="best">Best score</option><option value="pts">Points</option><option value="lessons">Lessons</option><option value="submittedAt">Submitted</option></select></label>
+    </div>
+    <div id="dashTable"></div>
+  </div>
+  <div class="dash-grid" data-dash hidden>
+    <div class="card"><div class="act-head"><span class="tile t-orange"><svg class="ic"><use href="#i-alert"/></svg></span><div><span class="eyebrow">Assessment</span><h3>Hardest questions</h3></div></div><div id="dashQs"></div></div>
+    <div class="card"><div class="act-head"><span class="tile t-green"><svg class="ic"><use href="#i-book"/></svg></span><div><span class="eyebrow">Lessons</span><h3>Completion by lesson</h3></div></div><div id="dashLessons"></div></div>
+  </div>
 </section>
 </div>
 
@@ -797,9 +952,20 @@ const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelect
 const ic=(n,c='')=>`<svg class="ic ${c}"><use href="#i-${n}"/></svg>`;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const KEY='verify-before-you-assist-v2';
-const S={done:[],pts:0,got:{},best:null,name:'',learned:{}};
-try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+// Progress is kept per trainee (keyed by email), so several people on one device or account never share a score.
+function DEF(){return {done:[],pts:0,got:{},best:null,name:'',learned:{},attempts:[],completedAt:null,startedAt:null,submittedAt:null,trainee:null}}
+function loadState(t){
+  const s=DEF();if(!t||!t.email)return s;
+  try{Object.assign(s,JSON.parse(localStorage.getItem(KEY+':'+tkey(t.email))||'{}'))}catch(e){}
+  if(!Array.isArray(s.attempts))s.attempts=[];if(!s.learned||typeof s.learned!=='object')s.learned={};if(!s.got||typeof s.got!=='object')s.got={};if(!Array.isArray(s.done))s.done=[];
+  s.trainee={name:t.name,email:t.email};return s;
+}
+let CUR=null;try{CUR=JSON.parse(localStorage.getItem(KEY+':current')||'null')}catch(e){}
+let S=loadState(CUR);
+let QUIZ=[],resetQuiz=()=>{};
+var RT=null; // claude.ai runtime (db, user) once available
+const store=()=>{if(!S.trainee)return;try{localStorage.setItem(KEY+':'+tkey(S.trainee.email),JSON.stringify(S));localStorage.setItem(KEY+':current',JSON.stringify(S.trainee))}catch(e){}};
+const save=()=>{store();syncSoon()};
 const restart=el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''};
 const shake=el=>{el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')};
 
@@ -844,6 +1010,7 @@ function paintDock(){
 const hooks={};
 function show(i){
   if(i<0||i>=lessons.length)return;cur=i;
+  $('#signin').hidden=true;$('.dock').hidden=false;
   lessons.forEach((l,j)=>l.hidden=j!==i);
   const l=lessons[i];[...l.children].forEach((c,k)=>c.style.setProperty('--i',k));
   l.classList.remove('enter');void l.offsetWidth;l.classList.add('enter');
@@ -852,7 +1019,7 @@ function show(i){
   paintDock();window.scrollTo({top:0});
   hooks[l.id]&&hooks[l.id]();
 }
-function complete(id){if(!S.done.includes(id)){S.done.push(id);save()}paintDock()}
+function complete(id){if(!S.done.includes(id)){S.done.push(id);if(!S.completedAt&&lessons.every(l=>S.done.includes(l.id)))S.completedAt=new Date().toISOString();save()}paintDock()}
 $$('[data-next]').forEach(b=>b.onclick=()=>{const id=lessons[cur].id;if(id!=='assessment')complete(id);show(cur+1)});
 $$('[data-goto]').forEach(b=>b.onclick=()=>{complete(lessons[cur].id);show(lessons.findIndex(l=>l.id===b.dataset.goto))});
 $('#prevBtn').onclick=()=>show(cur-1);$('#nextBtn').onclick=()=>show(cur+1);
@@ -1225,6 +1392,7 @@ chatFlow($('#chatClub'),[{cust:'Hi, my Club points haven\'t updated after my las
     {q:'"What email address do you have for me?"',o:['Ask which email they used and confirm if it matches','Tell them, it\'s their own data','Share the first three letters'],a:0,why:'Ask, don\'t tell. We confirm a match; we never disclose.'},
     {q:'Customer can\'t find their order number. First step?',o:['Look it up by name and share it','Guide them to search inbox, junk and spam with our keywords','Close the case until they find it'],a:1,why:'An automatic confirmation and receipt is sent for every order.'}
   ];
+  QUIZ=Q;resetQuiz=()=>start();
   const root=$('#quiz');let i,score,streak,ans;
   function start(){i=0;score=0;streak=0;ans=[];render()}
   function render(){
@@ -1251,11 +1419,14 @@ chatFlow($('#chatClub'),[{cust:'Hi, my Club points haven\'t updated after my las
   }
   function result(){
     const pass=score>=8;
-    S.best=Math.max(S.best||0,score);if(pass)complete('assessment');save();updCert();
+    S.best=Math.max(S.best||0,score);
+    S.attempts.push({score,total:Q.length,passed:pass,at:new Date().toISOString(),answers:ans.map(a=>a?1:0)});
+    if(S.attempts.length>20)S.attempts=S.attempts.slice(-20);
+    if(pass)complete('assessment');save();updCert();syncNow();
     root.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
       <span class="tile ${pass?'t-green':'t-orange'}">${ic(pass?'award':'refresh')}</span>
       <span class="big">${score}/10</span>
-      <p class="sub">${pass?'Passed. You know how to keep customers safe on every channel.':'You need 8 to pass. Review the misses, then try again.'}</p></div>
+      <p class="sub">${pass?'Passed. You know how to keep customers safe on every channel. Last step: submit your results on the final page.':'You need 8 to pass. Review the misses, then try again.'}</p></div>
       <ul class="review">${Q.map((q,k)=>`<li class="${ans[k]?'':'miss'}">${ic(ans[k]?'check':'x')}<span>${q.q}</span></li>`).join('')}</ul>
       <div class="row center"><button class="btn ${pass?'outline':'primary'}" data-retry>${ic('refresh')}Retake</button>${pass?`<button class="btn primary" data-torecap>Get your certificate${ic('right')}</button>`:''}</div>`;
     $('[data-retry]',root).onclick=start;
@@ -1282,15 +1453,21 @@ chatFlow($('#chatClub'),[{cust:'Hi, my Club points haven\'t updated after my las
   const nm=$('#certName');nm.value=S.name||'';
   nm.oninput=()=>{S.name=nm.value;save();updCert()};
   $('#certDate').innerHTML=ic('cal')+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  $('#finishBtn').onclick=()=>{
-    complete('recap');
-    const missing=lessons.filter(l=>!S.done.includes(l.id)).map(l=>l.dataset.title);
-    if(missing.length){toast('Still to do: '+missing.slice(0,3).join(', ')+(missing.length>3?'…':''),'alert')}
-    else{toast('Course complete. Well done!','award');confetti(200)}
+  $('#finishBtn').onclick=async function(){
+    const fb=$('#submitFb'),say=(ok,msg)=>{fb.hidden=false;fb.className='fbline '+(ok?'ok':'bad');fb.innerHTML=ic(ok?'check':'alert')+'<span></span>';$('span',fb).innerHTML=msg;restart(fb)};
+    if(!S.attempts.length){say(false,'Take the <b>final assessment</b> first, then come back here to submit.');return}
+    complete('recap');S.submittedAt=new Date().toISOString();store();
+    const b=this;b.disabled=true;b.lastChild.textContent='Sending…';
+    const r=await syncNow(true);
+    b.disabled=false;b.lastChild.textContent='Submit my results';
+    if(r==='ok'){say(true,`<b>Submitted.</b> Your trainer can now see your results. Best score: ${S.best}/10.`);confetti(200)}
+    else if(r==='offline')say(false,'Results can only be sent from the claude.ai course link. Open the course there, sign in with the same email, and submit again.');
+    else if(r==='denied')say(false,"Your account can't send results yet. Ask your trainer to give you <b>Contributor</b> access, then submit again.");
+    else say(false,"Your results couldn't be sent. Check your connection and press Submit again.");
   };
 })();
 function updCert(){
-  $('#certOut').textContent=(S.name||'').trim()||'Your name';
+  $('#certOut').textContent=(S.name||(S.trainee&&S.trainee.name)||'').trim()||'Your name';
   $('#certScore').innerHTML=ic('award')+(S.best==null?'Assessment: not taken':'Best score: '+S.best+'/10');
 }
 
@@ -1386,17 +1563,330 @@ function unlock(key,btn){
 lessons.forEach(l=>{
   const lc=$('.card.learn',l);if(!lc)return;
   let after=false,first=null;
-  [...l.children].forEach(c=>{if(c===lc){after=true;return}if(after&&c.classList.contains('card')){c.classList.add('gated');first=first||c}});
+  [...l.children].forEach(c=>{if(c===lc){after=true;return}if(after&&c.classList.contains('card')){c.classList.add('gated');c.dataset.gate='1';first=first||c}});
   if(first)first.insertAdjacentHTML('beforebegin',`<div class="phase check"><span class="ph-n">2</span><div><span class="mini-lbl">Then</span><b>Knowledge check</b></div></div>`);
   if(S.learned[l.id])$$('.card.gated',l).forEach(c=>c.classList.remove('gated'));
 });
 Object.entries(LEARN).forEach(([k,steps])=>stepper(k,steps));
 
+/* ---------- results sync (claude.ai only) ----------
+   One document per claude.ai account: results/<accountId> = {trainees: {<emailKey>: entry}}.
+   Each trainee who signs in with their email gets their own entry, so people sharing a device or
+   account never overwrite each other. Trainees write only their account's document; only the
+   course owner and editors can read the collection. */
+const escH=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function tkey(email){return 't'+Array.from(String(email).toLowerCase()).map(c=>c.charCodeAt(0).toString(16)).join('-')}
+function buildDoc(){
+  const passA=S.attempts.find(a=>a.passed);
+  return {traineeName:S.trainee?S.trainee.name:'',traineeEmail:S.trainee?S.trainee.email:'',lessonsDone:S.done.slice(),lessonCount:lessons.length,
+    learned:Object.keys(S.learned),pts:S.pts,got:S.got,best:S.best,attempts:S.attempts.slice(-20),passed:!!passA,passedAt:passA?passA.at:null,
+    completedAt:S.completedAt||null,submittedAt:S.submittedAt||null,certName:(S.name||'').trim().slice(0,80),startedAt:S.startedAt||null};
+}
+let rtP=null;
+function ensureRT(){
+  if(rtP)return rtP;
+  rtP=(async()=>{
+    if(!(window.claude&&typeof window.claude.use==='function'))return null;
+    const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);
+    RT={db,user,uid:null,ref:null,canWrite:true,writing:Promise.resolve(),timer:null,last:{},exists:false};
+    return RT;
+  })();
+  return rtP;
+}
+function syncSoon(){if(!RT||!RT.ref||!RT.canWrite||!S.trainee)return;clearTimeout(RT.timer);RT.timer=setTimeout(()=>syncNow(),1200)}
+async function writeEntry(k,entry,now){
+  if(RT.exists){
+    try{await RT.ref.update({trainees:{[k]:entry},updatedAt:now});return}
+    catch(e){if(!(e&&e.code==='invalid_argument'))throw e;const s=await RT.ref.get();if(s.exists)throw e;RT.exists=false}
+  }
+  await RT.ref.set({trainees:{[k]:entry},updatedAt:now});RT.exists=true;
+}
+// Resolves 'ok' | 'offline' | 'denied' | 'error' | 'skip'; never rejects.
+function syncNow(force){
+  if(!S.trainee)return Promise.resolve('skip');
+  if(!RT||!RT.ref)return Promise.resolve('offline');
+  if(!RT.canWrite)return Promise.resolve('denied');
+  clearTimeout(RT.timer);
+  if(!S.startedAt){S.startedAt=new Date().toISOString();store()}
+  const k=tkey(S.trainee.email),entry=buildDoc(),j=JSON.stringify(entry);
+  if(!force&&RT.last[k]===j)return RT.writing.then(()=>'ok');
+  RT.last[k]=j;
+  const now=new Date().toISOString();entry.updatedAt=now;
+  const p=RT.writing.then(()=>writeEntry(k,entry,now)).then(()=>'ok',e=>{
+    RT.last[k]=null;const c=e&&e.code;
+    if(c==='invalid_argument'){RT.canWrite=false;shareNote("Your results can't be saved with your current access. Ask your trainer to give you Contributor access.");return 'denied'}
+    if(c==='quota_exceeded')shareNote("Your results couldn't be saved: the course's results store is full. Let your trainer know.");
+    return 'error';
+  });
+  RT.writing=p;return p;
+}
+function shareNote(msg){const n=$('#shareNote');n.hidden=false;$('span',n).textContent=msg}
+function mergeRemote(d){
+  const uni=(a,b)=>[...new Set([...(a||[]),...(b||[])])];
+  S.done=uni(S.done,d.lessonsDone).filter(id=>lessons.some(l=>l.id===id));
+  (d.learned||[]).forEach(k=>S.learned[k]=1);
+  S.got=Object.assign({},d.got||{},S.got);
+  S.pts=Math.max(S.pts||0,d.pts||0);
+  if(d.best!=null)S.best=Math.max(S.best||0,d.best);
+  if(Array.isArray(d.attempts)&&d.attempts.length>S.attempts.length)S.attempts=d.attempts.slice();
+  S.completedAt=S.completedAt||d.completedAt||null;S.submittedAt=S.submittedAt||d.submittedAt||null;S.startedAt=d.startedAt||S.startedAt;
+  if(!S.name&&d.certName)S.name=d.certName;
+  store();applyState();
+  const m=buildDoc();
+  const differs=m.lessonsDone.length!==(d.lessonsDone||[]).length||m.learned.length!==(d.learned||[]).length||m.pts!==(d.pts||0)||m.attempts.length!==(d.attempts||[]).length||m.certName!==(d.certName||'')||m.traineeName!==(d.traineeName||'');
+  if(differs)syncSoon();else RT.last[tkey(S.trainee.email)]=JSON.stringify(m);
+}
+// Load this trainee's saved entry (if any) from the store, so their progress follows them.
+async function pullTrainee(){
+  if(!RT||!RT.ref||!S.trainee)return;
+  const email=S.trainee.email;
+  try{
+    const s=await RT.ref.get();RT.exists=s.exists;
+    if(!S.trainee||S.trainee.email!==email)return;
+    const d=s.exists?s.data():null,e=d&&d.trainees&&d.trainees[tkey(email)];
+    if(e)mergeRemote(e);else syncSoon();
+  }catch(e){}
+}
+async function initRuntime(){
+  const rt=await ensureRT();
+  if(!rt||INST||!rt.db||!rt.user)return;
+  const uid=await rt.user.id();if(!uid)return;
+  RT.uid=uid;RT.ref=rt.db.doc('results/'+uid);
+  shareNote('Your lesson progress and assessment scores are shared with your trainer.');
+  await pullTrainee();
+}
+
+/* ---------- instructor dashboard ---------- */
+const D={rows:[],sort:'updatedAt',filter:'all',q:'',loaded:false,unsub:null,view:[],at:null,timer:null};
+const fmtDate=iso=>{if(!iso)return '';const d=new Date(iso);if(isNaN(d))return '';const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`};
+const ago=iso=>{if(!iso)return '—';const s=(Date.now()-new Date(iso))/1000;if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';const d=Math.floor(s/86400);return d<30?d+(d===1?' day ago':' days ago'):fmtDate(iso).slice(0,10)};
+function dashStatus(t){$('#dashStatus').textContent=t}
+function flatten(snap){
+  const out=[];
+  snap.docs.forEach(d=>{const data=d.data()||{},t=data.trainees||{};Object.keys(t).forEach(k=>{if(t[k]&&typeof t[k]==='object')out.push(Object.assign({id:d.id+'/'+k},t[k]))})});
+  return out;
+}
+function instMsg(text,bad){const m=$('#instMsg');m.hidden=!text;if(!text)return;m.className='fbline '+(bad?'bad':'info');m.innerHTML=ic(bad?'lock':'shield')+'<span></span>';$('span',m).textContent=text;restart(m)}
+function enterInstructorMode(){
+  lessons.forEach(l=>l.hidden=true);$('#signin').hidden=true;$('.dock').hidden=true;$('#pts').hidden=true;$('#whoBtn').hidden=true;$('#instPill').hidden=true;
+  $('.page').classList.add('wide');
+  $$('#instructor [data-dash]').forEach(el=>el.hidden=true);$('#instLogin').hidden=false;instMsg('');
+  const p=$('#instructor');p.hidden=false;[...p.children].forEach((c,k)=>c.style.setProperty('--i',k));p.classList.remove('enter');void p.offsetWidth;p.classList.add('enter');
+  $('#nowTxt').textContent='Instructor login';window.scrollTo({top:0});
+  setTimeout(()=>{try{$('#iEmail').focus({preventScroll:true})}catch(e){}},350);
+}
+function leaveInstructorMode(){
+  if(D.unsub){D.unsub();D.unsub=null}clearTimeout(D.timer);D.rows=[];D.loaded=false;
+  $('#pwForm').reset();$('#pwForm').hidden=true;$('#iPass').value='';
+  ['#kpis','#dashTable','#dashQs','#dashLessons'].forEach(s=>$(s).innerHTML='');
+  $('#instructor').hidden=true;$('.page').classList.remove('wide');$('#pts').hidden=false;$('#instPill').hidden=true;
+  try{if(location.hash)history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+  if(S.trainee)show(0);else showSignin();paintWho();
+}
+$('#toInstructor').onclick=enterInstructorMode;
+$('#instBackCourse').onclick=leaveInstructorMode;
+$('#instLogout').onclick=()=>{leaveInstructorMode();toast('Logged out of the instructor dashboard','check')};
+/* Instructor login: email + password, checked against a salted PBKDF2 hash kept in config/instructor.
+   That document is readable only by the course owner and editors, so the hash never reaches trainees,
+   and the claude.ai account must also be an owner or editor. */
+const b64=u8=>btoa(String.fromCharCode(...u8));
+const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function pbkdf2(pw,saltB64,iter){
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:unb64(saltB64),iterations:iter,hash:'SHA-256'},key,256);
+  return b64(new Uint8Array(bits));
+}
+const sameStr=(a,b)=>{a=String(a);b=String(b);if(a.length!==b.length)return false;let r=0;for(let i=0;i<a.length;i++)r|=a.charCodeAt(i)^b.charCodeAt(i);return r===0};
+const LOCK={fails:0,until:0};
+$('#instLogin').onsubmit=async e=>{
+  e.preventDefault();
+  const b=$('#instSignIn'),l=$('span',b),email=$('#iEmail').value.trim().toLowerCase(),pw=$('#iPass').value;
+  if(Date.now()<LOCK.until){instMsg('Too many attempts. Try again in '+Math.ceil((LOCK.until-Date.now())/1000)+' seconds.',true);return}
+  if(!email||!pw){instMsg('Enter your email and password.',true);return}
+  b.disabled=true;l.textContent='Checking…';instMsg('');
+  try{
+    const rt=await ensureRT();
+    if(!rt||!rt.user||!rt.db){instMsg('Instructor login only works from the claude.ai course link. Open the course there and try again.',true);return}
+    let ok=false;
+    if(await rt.user.canEdit()){
+      const s=await rt.db.doc('config/instructor').get(),c=s.exists?s.data():null;
+      if(c&&c.salt&&c.hash)ok=sameStr(await pbkdf2(pw,c.salt,c.iter||210000),c.hash)&&String(c.email||'').toLowerCase()===email;
+    }else await new Promise(r=>setTimeout(r,700));
+    if(!ok){
+      LOCK.fails++;if(LOCK.fails>=5){LOCK.fails=0;LOCK.until=Date.now()+60000}
+      instMsg('Email or password is incorrect, or this account has no instructor access.',true);$('#iPass').value='';$('#iPass').focus();return;
+    }
+    LOCK.fails=0;$('#iPass').value='';
+    $('#instLogin').hidden=true;$('#instPill').hidden=false;
+    $$('#instructor [data-dash]').forEach((el,k)=>{el.hidden=false;el.style.animation='rise .6s both';el.style.animationDelay=(k*90)+'ms'});
+    $('#nowTxt').textContent='Instructor · Team results';window.scrollTo({top:0});
+    openInstructor();
+  }catch(err){instMsg("Couldn't check your login. Check your connection and try again.",true)}
+  finally{b.disabled=false;l.textContent='Log in'}
+};
+$('#pwBtn').onclick=()=>{const f=$('#pwForm');f.hidden=!f.hidden;$('#pwMsg').hidden=true;if(!f.hidden)$('#pwCur').focus()};
+$('#pwCancel').onclick=()=>{$('#pwForm').reset();$('#pwForm').hidden=true};
+$('#pwForm').onsubmit=async e=>{
+  e.preventDefault();
+  const cur=$('#pwCur').value,nw=$('#pwNew').value,cf=$('#pwConf').value,m=$('#pwMsg');
+  const say=(ok,t)=>{m.hidden=false;m.className='fbline '+(ok?'ok':'bad');m.innerHTML=ic(ok?'check':'alert')+'<span></span>';$('span',m).textContent=t;restart(m)};
+  if(nw.length<10)return say(false,'Use at least 10 characters for the new password.');
+  if(nw!==cf)return say(false,"The new passwords don't match.");
+  try{
+    const ref=RT.db.doc('config/instructor'),s=await ref.get(),c=s.exists?s.data():null;
+    if(!c||!sameStr(await pbkdf2(cur,c.salt,c.iter||210000),c.hash))return say(false,'Current password is incorrect.');
+    const salt=b64(crypto.getRandomValues(new Uint8Array(16))),iter=210000;
+    await ref.set({email:c.email,salt,iter,hash:await pbkdf2(nw,salt,iter),updatedAt:new Date().toISOString()});
+    $('#pwForm').reset();say(true,'Password changed. Use the new one next time you log in.');
+  }catch(err){say(false,"Couldn't change the password"+(err&&err.code?' ('+err.code+')':'')+'. Try again.')}
+};
+function openInstructor(){
+  renderDash();
+  if(D.unsub)return;
+  dashStatus('Loading results…');
+  D.timer=setTimeout(()=>{if(!D.loaded)dashStatus("Results can't be reached yet. Press Refresh, or wait for the connection to come back.")},10000);
+  D.unsub=RT.db.collection('results').onSnapshot(snap=>{
+    D.rows=flatten(snap);
+    if(!snap.metadata.fromCache){D.loaded=true;D.at=new Date();clearTimeout(D.timer)}
+    renderDash();
+  },e=>{clearTimeout(D.timer);D.loaded=true;D.unsub=null;dashStatus('Live updates stopped ('+((e&&e.code)||'error')+'). Press Refresh to load the latest results.')});
+}
+$('#dashRefresh').onclick=async function(){
+  if(!RT||!RT.db)return;this.disabled=true;
+  try{const s=await RT.db.collection('results').get();D.rows=flatten(s);D.loaded=true;D.at=new Date();clearTimeout(D.timer);renderDash();toast('Results refreshed','refresh')}
+  catch(e){toast("Couldn't refresh results"+(e&&e.code?' ('+e.code+')':''),'alert')}
+  finally{this.disabled=false}
+};
+function people(){
+  const by={};
+  D.rows.forEach(r=>{const em=(r.traineeEmail||'').toLowerCase()||r.id;if(!by[em]||String(r.updatedAt||'')>String(by[em].updatedAt||''))by[em]=r});
+  return Object.values(by).map(r=>{
+    const at=Array.isArray(r.attempts)?r.attempts:[];
+    const best=at.length?Math.max(...at.map(a=>a.score||0)):null;
+    const status=r.passed?'passed':at.length?'failed':'none';
+    return {id:r.id,name:r.traineeName||r.certName||'Unnamed trainee',email:r.traineeEmail||'',
+      lessons:(r.lessonsDone||[]).filter(id=>lessons.some(l=>l.id===id)).length,lessonsDone:r.lessonsDone||[],lessonCount:lessons.length,
+      pts:r.pts||0,attempts:at,tries:at.length,best,last:at.length?at[at.length-1].score:null,status,
+      passedAt:r.passedAt||null,completedAt:r.completedAt||null,submittedAt:r.submittedAt||null,startedAt:r.startedAt||null,updatedAt:r.updatedAt||r.startedAt||null};
+  });
+}
+const stLabel={passed:['ok','check','Passed'],failed:['bad','x','Not passed yet'],none:['mid','book','In progress']};
+const initials=n=>n.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'?';
+const hue=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))%360;return h};
+function renderDash(){
+  const all=people();D.view=all;
+  const n=all.length,tested=all.filter(r=>r.tries),passed=all.filter(r=>r.status==='passed'),subm=all.filter(r=>r.submittedAt);
+  const avgBest=tested.length?tested.reduce((s,r)=>s+r.best,0)/tested.length:null;
+  const tries=all.reduce((s,r)=>s+r.tries,0);
+  if(D.loaded){const t=D.at?D.at.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):'';dashStatus(n?`${n} trainee${n===1?'':'s'} · live · updated ${t}`:`No submissions yet · live · checked ${t}`)}
+  $('#exportBtn').disabled=!n;
+  const kpi=(tone,icon,lbl,val,note)=>`<div class="stat"><span class="tile sm ${tone}">${ic(icon)}</span><span class="num">${val}</span><p><b>${lbl}</b><br>${note}</p></div>`;
+  $('#kpis').innerHTML=
+    kpi('t-blue','user','Trainees',n,'signed in to the course')+
+    kpi('t-green','mail','Submitted',subm.length,n?Math.round(subm.length/n*100)+'% of trainees':'sent their final results')+
+    kpi('t-indigo','award','Passed',passed.length,tested.length?Math.round(passed.length/tested.length*100)+'% of those tested':'scored 8/10 or more')+
+    kpi('t-orange','star','Avg best score',avgBest==null?'—':avgBest.toFixed(1)+'<small>/10</small>',tested.length+' tested')+
+    kpi('t-pink','refresh','Attempts',tries,tested.length?(tries/tested.length).toFixed(1)+' per tested trainee':'on the assessment');
+  const q=D.q.trim().toLowerCase(),key=D.sort,dir=(key==='name')?1:-1;
+  const rows=all.filter(r=>(D.filter==='all'||r.status===D.filter)&&(!q||r.name.toLowerCase().includes(q)||r.email.toLowerCase().includes(q)));
+  rows.sort((a,b)=>{let x=a[key],y=b[key];if(key==='name'){x=x.toLowerCase();y=y.toLowerCase()}if(x==null)return 1;if(y==null)return -1;return (x>y?1:x<y?-1:0)*dir});
+  const tbl=$('#dashTable');
+  if(!n){tbl.innerHTML=`<div class="empty-state"><span class="tile t-blue">${ic('user')}</span><span>Nobody has signed in yet. Share the course with your team at <b>Contributor</b> access. Each trainee appears here as soon as they sign in, and their final results arrive when they press <b>Submit my results</b>.</span></div>`;}
+  else if(!rows.length){tbl.innerHTML=`<div class="empty-state">No trainees match this search or filter.</div>`}
+  else{
+    tbl.innerHTML=`<div class="tlist"><div class="thead"><span>Trainee</span><span>Lessons</span><span>Points</span><span>Attempts</span><span>Best score</span><span>Status</span><span>Submitted</span><span>Last active</span></div>${rows.map((r,i)=>{
+      const [c,icn,lbl]=stLabel[r.status],h=hue(r.email||r.name);
+      return `<div class="trow" style="animation-delay:${Math.min(i,12)*30}ms">
+        <div class="who"><span class="ini" style="background:hsl(${h} 80% 93%);color:hsl(${h} 55% 32%)">${escH(initials(r.name))}</span><div style="min-width:0"><b>${escH(r.name)}</b>${r.email?`<small>${escH(r.email)}</small>`:''}</div></div>
+        <div class="c" data-l="Lessons"><span class="mbar"><i><b style="width:${Math.round(r.lessons/r.lessonCount*100)}%"></b></i>${r.lessons}/${r.lessonCount}</span></div>
+        <div class="c" data-l="Points">${r.pts}</div>
+        <div class="c" data-l="Attempts">${r.tries}</div>
+        <div class="c" data-l="Best score">${r.best==null?'—':r.best+'/10'}</div>
+        <div class="c" data-l="Status"><span class="st ${c}">${ic(icn)}${lbl}</span></div>
+        <div class="c" data-l="Submitted">${r.submittedAt?escH(fmtDate(r.submittedAt)):'—'}</div>
+        <div class="c" data-l="Last active" title="${escH(fmtDate(r.updatedAt))}">${ago(r.updatedAt)}</div></div>`}).join('')}</div>`;
+  }
+  const qs=QUIZ.map((qq,i)=>{let t=0,c=0;all.forEach(r=>r.attempts.forEach(a=>{if(a.answers&&a.answers[i]!=null){t++;c+=a.answers[i]?1:0}}));return {i,q:qq.q,t,c,p:t?c/t:null}}).filter(x=>x.t);
+  qs.sort((a,b)=>a.p-b.p);
+  $('#dashQs').innerHTML=qs.length?`<div class="bars">${qs.map(x=>`<div class="barrow" title="${escH(x.q)}"><span class="lbl"><b>Q${x.i+1}</b>${escH(x.q)}</span><span class="track"><b style="width:${Math.round(x.p*100)}%"></b></span><span class="pct">${Math.round(x.p*100)}%</span></div>`).join('')}</div><p class="score-line" style="margin-top:12px">% of answers correct, across all attempts. Lowest first.</p>`:`<div class="empty-state">No assessment attempts yet.</div>`;
+  $('#dashLessons').innerHTML=n?`<div class="bars">${lessons.map((l,i)=>{const c=all.filter(r=>r.lessonsDone.includes(l.id)).length;return `<div class="barrow"><span class="lbl"><b>${i+1}</b>${escH(l.dataset.title)}</span><span class="track"><b style="width:${Math.round(c/n*100)}%"></b></span><span class="pct">${c}/${n}</span></div>`}).join('')}</div>`:`<div class="empty-state">No lesson activity yet.</div>`;
+}
+$('#dashSearch').oninput=e=>{D.q=e.target.value;renderDash()};
+$('#dashSort').onchange=e=>{D.sort=e.target.value;renderDash()};
+$$('#dashFilter button').forEach(b=>b.onclick=()=>{D.filter=b.dataset.f;$$('#dashFilter button').forEach(x=>x.classList.toggle('on',x===b));renderDash()});
+function loadXLSX(){
+  if(window.XLSX)return Promise.resolve(window.XLSX);
+  return new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=()=>res(window.XLSX);s.onerror=rej;document.head.appendChild(s)});
+}
+$('#exportBtn').onclick=async function(){
+  const lbl=$('span',this);this.disabled=true;lbl.textContent='Preparing…';
+  try{
+    const dl=window.claude&&claude.use?await claude.use('downloads'):null;
+    if(!dl){toast('Export is only available when the course is open on claude.ai','alert');return}
+    const X=await loadXLSX(),all=people();
+    const stTxt={passed:'Passed',failed:'Not passed yet',none:'In progress'};
+    const t1=[['Name','Email','Status','Submitted on','Lessons completed','Lessons total','Points','Attempts','Best score (/10)','Last score (/10)','Passed on','Course finished on','Started','Last active']]
+      .concat(all.map(r=>[r.name,r.email,stTxt[r.status],fmtDate(r.submittedAt),r.lessons,r.lessonCount,r.pts,r.tries,r.best,r.last,fmtDate(r.passedAt),fmtDate(r.completedAt),fmtDate(r.startedAt),fmtDate(r.updatedAt)]));
+    const t2=[['Name','Email','Attempt','Score','Out of','Result','Date'].concat(QUIZ.map((_,i)=>'Q'+(i+1)))];
+    all.forEach(r=>r.attempts.forEach((a,k)=>t2.push([r.name,r.email,k+1,a.score,a.total||10,a.passed?'Passed':'Not passed',fmtDate(a.at)].concat(QUIZ.map((_,i)=>a.answers&&a.answers[i]!=null?(a.answers[i]?'Correct':'Wrong'):'')))));
+    const t3=[['Question','Text','Answers','Correct','% correct']].concat(QUIZ.map((qq,i)=>{let t=0,c=0;all.forEach(r=>r.attempts.forEach(a=>{if(a.answers&&a.answers[i]!=null){t++;c+=a.answers[i]?1:0}}));return ['Q'+(i+1),qq.q,t,c,t?Math.round(c/t*100):null]}));
+    const t4=[['Lesson','Title','Completed by','Trainees','% completed']].concat(lessons.map((l,i)=>{const c=all.filter(r=>r.lessonsDone.includes(l.id)).length;return [i+1,l.dataset.title,c,all.length,all.length?Math.round(c/all.length*100):null]}));
+    const wb=X.utils.book_new();
+    [[t1,'Trainees',[24,30,16,17,10,10,8,9,10,10,17,17,17,17]],[t2,'Attempts',[24,30,8,7,7,12,17].concat(QUIZ.map(()=>9))],[t3,'Questions',[10,70,9,9,10]],[t4,'Lessons',[8,24,13,10,12]]].forEach(([d,name,w])=>{const ws=X.utils.aoa_to_sheet(d);ws['!cols']=w.map(wch=>({wch}));ws['!autofilter']={ref:ws['!ref']};X.utils.book_append_sheet(wb,ws,name)});
+    const buf=X.write(wb,{bookType:'xlsx',type:'array'});
+    const d=new Date(),p=n=>String(n).padStart(2,'0');
+    await dl.save({filename:`verify-course-results-${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.xlsx`,data:new Blob([buf])});
+    toast('Results exported','check');
+  }catch(e){
+    const code=e&&e.code;
+    if(code==='declined')toast('Export cancelled','x');
+    else if(code==='rate_limited')toast('Another save is already open. Try again in a moment.','alert');
+    else if(!code)toast("Couldn't load the Excel exporter. Check your connection and try again.",'alert');
+    else toast("Export isn't available here",'alert');
+  }finally{this.disabled=!D.view.length;lbl.textContent='Export to Excel'}
+};
+
+/* ---------- trainee sign-in ---------- */
+function applyState(){
+  setPts(false);updCert();$('#certName').value=S.name||'';
+  lessons.forEach(l=>{const locked=!S.learned[l.id];$$('[data-gate]',l).forEach(c=>c.classList.toggle('gated',locked))});
+  paintDock();paintWho();
+  const fb=$('#submitFb');if(fb)fb.hidden=true;
+}
+function paintWho(){const b=$('#whoBtn');b.hidden=!S.trainee||!$('#instructor').hidden;if(S.trainee)$('span',b).textContent=S.trainee.name.split(' ')[0]}
+function showSignin(){
+  lessons.forEach(l=>l.hidden=true);$('.dock').hidden=true;$('#instructor').hidden=true;
+  const s=$('#signin');s.hidden=false;[...s.children].forEach((c,k)=>c.style.setProperty('--i',k));s.classList.remove('enter');void s.offsetWidth;s.classList.add('enter');
+  $('#tName').value=S.trainee?S.trainee.name:'';$('#tEmail').value=S.trainee?S.trainee.email:'';$('#signinErr').hidden=true;
+  $('#signoutBtn').hidden=!S.trainee;
+  $('#nowTxt').textContent='Sign in';window.scrollTo({top:0});paintWho();
+}
+$('#signinForm').onsubmit=e=>{
+  e.preventDefault();
+  const name=$('#tName').value.trim().replace(/\s+/g,' '),email=$('#tEmail').value.trim().toLowerCase(),err=$('#signinErr');
+  let msg='';
+  if(name.length<2)msg='Enter your full name.';
+  else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))msg='Enter a valid email address, like name@company.com.';
+  if(msg){err.hidden=false;err.innerHTML=ic('alert')+'<span></span>';$('span',err).textContent=msg;restart(err);return}
+  const same=!!S.trainee&&S.trainee.email===email;
+  if(!same){S=loadState({name,email});resetQuiz()}
+  S.trainee={name:name.slice(0,80),email:email.slice(0,120)};
+  if(!S.name)S.name=S.trainee.name;
+  save();applyState();show(same?cur:0);toast('Welcome, '+name.split(' ')[0]+'!','check');
+  pullTrainee();
+};
+$('#signoutBtn').onclick=()=>{try{localStorage.removeItem(KEY+':current')}catch(e){}S=DEF();resetQuiz();applyState();showSignin();toast('Signed out','check')};
+$('#whoBtn').onclick=showSignin;
+
 /* ---------- boot ---------- */
-setPts(false);updCert();
-const h=lessons.findIndex(l=>'#'+l.id===location.hash);
-show(h>=0?h:0);
+const INST=location.hash==='#instructor';
+applyState();
+if(INST)enterInstructorMode();
+else if(!S.trainee)showSignin();
+else{const h=lessons.findIndex(l=>'#'+l.id===location.hash);show(h>=0?h:0)}
+initRuntime();
 })();
 </script>
 
-</body></html>
+</body>
+</html>
