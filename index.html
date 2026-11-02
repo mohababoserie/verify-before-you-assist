@@ -1644,7 +1644,7 @@ function mergeRemote(d){
   if(Array.isArray(d.attempts)&&d.attempts.length>S.attempts.length)S.attempts=d.attempts.slice();
   S.completedAt=S.completedAt||d.completedAt||null;S.submittedAt=S.submittedAt||d.submittedAt||null;S.startedAt=d.startedAt||S.startedAt;
   if(!S.name&&d.certName)S.name=d.certName;
-  if(!S.at&&d.lastLesson)S.at=d.lastLesson;
+  if(d.lastLesson&&(!S.at||S.at===lessons[0].id))S.at=d.lastLesson;
   store();applyState();
   // A returning trainee on a new device picks up at the lesson they last had open.
   const j=lessons.findIndex(l=>l.id===S.at);
