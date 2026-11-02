@@ -586,8 +586,6 @@ table.dt{width:100%;border-collapse:collapse;min-width:860px;font-size:14px}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
 </style>
-</head>
-<body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
@@ -953,7 +951,7 @@ const ic=(n,c='')=>`<svg class="ic ${c}"><use href="#i-${n}"/></svg>`;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const KEY='verify-before-you-assist-v2';
 // Progress is kept per trainee (keyed by email), so several people on one device or account never share a score.
-function DEF(){return {done:[],pts:0,got:{},best:null,name:'',learned:{},attempts:[],completedAt:null,startedAt:null,submittedAt:null,trainee:null}}
+function DEF(){return {done:[],pts:0,got:{},best:null,name:'',learned:{},attempts:[],completedAt:null,startedAt:null,submittedAt:null,trainee:null,at:null}}
 function loadState(t){
   const s=DEF();if(!t||!t.email)return s;
   try{Object.assign(s,JSON.parse(localStorage.getItem(KEY+':'+tkey(t.email))||'{}'))}catch(e){}
@@ -1013,6 +1011,7 @@ function show(i){
   $('#signin').hidden=true;$('.dock').hidden=false;
   lessons.forEach((l,j)=>l.hidden=j!==i);
   const l=lessons[i];[...l.children].forEach((c,k)=>c.style.setProperty('--i',k));
+  if(S.trainee&&S.at!==l.id){S.at=l.id;store()}
   l.classList.remove('enter');void l.offsetWidth;l.classList.add('enter');
   $('#nowTxt').textContent=(i+1)+' / '+lessons.length+' · '+l.dataset.title;
   try{history.replaceState(null,'','#'+l.id)}catch(e){}
@@ -1580,13 +1579,26 @@ function buildDoc(){
   const passA=S.attempts.find(a=>a.passed);
   return {traineeName:S.trainee?S.trainee.name:'',traineeEmail:S.trainee?S.trainee.email:'',lessonsDone:S.done.slice(),lessonCount:lessons.length,
     learned:Object.keys(S.learned),pts:S.pts,got:S.got,best:S.best,attempts:S.attempts.slice(-20),passed:!!passA,passedAt:passA?passA.at:null,
-    completedAt:S.completedAt||null,submittedAt:S.submittedAt||null,certName:(S.name||'').trim().slice(0,80),startedAt:S.startedAt||null};
+    completedAt:S.completedAt||null,submittedAt:S.submittedAt||null,certName:(S.name||'').trim().slice(0,80),startedAt:S.startedAt||null,lastLesson:S.at||null};
+}
+/* Outside claude.ai (for example on GitHub Pages) results go to a Google Sheet through the course's
+   Apps Script web app (apps-script/Code.gs). Instructor login is checked there too. */
+const API_URL='https://script.google.com/macros/s/AKfycbx2Vx8MDQZP_CdvL4KEruBvHCSmh_OAj5O42tWgGIvOgwI1wskQRgjSekCZX6PGN_wzOA/exec';
+function api(action,body){
+  const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),25000);
+  return fetch(API_URL,{method:'POST',body:JSON.stringify(Object.assign({action},body||{})),signal:ctl.signal})
+    .then(r=>{if(!r.ok)throw {code:'http_'+r.status};return r.json()})
+    .finally(()=>clearTimeout(t));
 }
 let rtP=null;
 function ensureRT(){
   if(rtP)return rtP;
   rtP=(async()=>{
-    if(!(window.claude&&typeof window.claude.use==='function'))return null;
+    if(!(window.claude&&typeof window.claude.use==='function')){
+      if(!API_URL)return null;
+      RT={api:true,ref:'api',canWrite:true,writing:Promise.resolve(),timer:null,last:{},exists:true};
+      return RT;
+    }
     const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);
     RT={db,user,uid:null,ref:null,canWrite:true,writing:Promise.resolve(),timer:null,last:{},exists:false};
     return RT;
@@ -1595,6 +1607,7 @@ function ensureRT(){
 }
 function syncSoon(){if(!RT||!RT.ref||!RT.canWrite||!S.trainee)return;clearTimeout(RT.timer);RT.timer=setTimeout(()=>syncNow(),1200)}
 async function writeEntry(k,entry,now){
+  if(RT.api){const r=await api('save',{entry});if(!r||!r.ok)throw {code:(r&&r.error)||'error'};return}
   if(RT.exists){
     try{await RT.ref.update({trainees:{[k]:entry},updatedAt:now});return}
     catch(e){if(!(e&&e.code==='invalid_argument'))throw e;const s=await RT.ref.get();if(s.exists)throw e;RT.exists=false}
@@ -1631,7 +1644,11 @@ function mergeRemote(d){
   if(Array.isArray(d.attempts)&&d.attempts.length>S.attempts.length)S.attempts=d.attempts.slice();
   S.completedAt=S.completedAt||d.completedAt||null;S.submittedAt=S.submittedAt||d.submittedAt||null;S.startedAt=d.startedAt||S.startedAt;
   if(!S.name&&d.certName)S.name=d.certName;
+  if(!S.at&&d.lastLesson)S.at=d.lastLesson;
   store();applyState();
+  // A returning trainee on a new device picks up at the lesson they last had open.
+  const j=lessons.findIndex(l=>l.id===S.at);
+  if(j>0&&cur===0&&$('#signin').hidden&&$('#instructor').hidden)show(j);
   const m=buildDoc();
   const differs=m.lessonsDone.length!==(d.lessonsDone||[]).length||m.learned.length!==(d.learned||[]).length||m.pts!==(d.pts||0)||m.attempts.length!==(d.attempts||[]).length||m.certName!==(d.certName||'')||m.traineeName!==(d.traineeName||'');
   if(differs)syncSoon();else RT.last[tkey(S.trainee.email)]=JSON.stringify(m);
@@ -1641,6 +1658,12 @@ async function pullTrainee(){
   if(!RT||!RT.ref||!S.trainee)return;
   const email=S.trainee.email;
   try{
+    if(RT.api){
+      const r=await api('load',{email});
+      if(!S.trainee||S.trainee.email!==email)return;
+      if(r&&r.ok&&r.entry)mergeRemote(r.entry);else syncSoon();
+      return;
+    }
     const s=await RT.ref.get();RT.exists=s.exists;
     if(!S.trainee||S.trainee.email!==email)return;
     const d=s.exists?s.data():null,e=d&&d.trainees&&d.trainees[tkey(email)];
@@ -1649,7 +1672,9 @@ async function pullTrainee(){
 }
 async function initRuntime(){
   const rt=await ensureRT();
-  if(!rt||INST||!rt.db||!rt.user)return;
+  if(!rt||INST)return;
+  if(rt.api){shareNote('Your lesson progress and assessment scores are shared with your trainer.');await pullTrainee();return}
+  if(!rt.db||!rt.user)return;
   const uid=await rt.user.id();if(!uid)return;
   RT.uid=uid;RT.ref=rt.db.doc('results/'+uid);
   shareNote('Your lesson progress and assessment scores are shared with your trainer.');
@@ -1657,7 +1682,7 @@ async function initRuntime(){
 }
 
 /* ---------- instructor dashboard ---------- */
-const D={rows:[],sort:'updatedAt',filter:'all',q:'',loaded:false,unsub:null,view:[],at:null,timer:null};
+const D={rows:[],sort:'updatedAt',filter:'all',q:'',loaded:false,unsub:null,view:[],at:null,timer:null,token:null,poll:null};
 const fmtDate=iso=>{if(!iso)return '';const d=new Date(iso);if(isNaN(d))return '';const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`};
 const ago=iso=>{if(!iso)return '—';const s=(Date.now()-new Date(iso))/1000;if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';const d=Math.floor(s/86400);return d<30?d+(d===1?' day ago':' days ago'):fmtDate(iso).slice(0,10)};
 function dashStatus(t){$('#dashStatus').textContent=t}
@@ -1676,12 +1701,12 @@ function enterInstructorMode(){
   setTimeout(()=>{try{$('#iEmail').focus({preventScroll:true})}catch(e){}},350);
 }
 function leaveInstructorMode(){
-  if(D.unsub){D.unsub();D.unsub=null}clearTimeout(D.timer);D.rows=[];D.loaded=false;
+  if(D.unsub){D.unsub();D.unsub=null}clearTimeout(D.timer);clearInterval(D.poll);D.poll=null;D.token=null;D.rows=[];D.loaded=false;
   $('#pwForm').reset();$('#pwForm').hidden=true;$('#iPass').value='';
   ['#kpis','#dashTable','#dashQs','#dashLessons'].forEach(s=>$(s).innerHTML='');
   $('#instructor').hidden=true;$('.page').classList.remove('wide');$('#pts').hidden=false;$('#instPill').hidden=true;
   try{if(location.hash)history.replaceState(null,'',location.pathname+location.search)}catch(e){}
-  if(S.trainee)show(0);else showSignin();paintWho();
+  if(S.trainee)show(Math.max(0,lessons.findIndex(l=>l.id===S.at)));else showSignin();paintWho();
 }
 $('#toInstructor').onclick=enterInstructorMode;
 $('#instBackCourse').onclick=leaveInstructorMode;
@@ -1706,9 +1731,13 @@ $('#instLogin').onsubmit=async e=>{
   b.disabled=true;l.textContent='Checking…';instMsg('');
   try{
     const rt=await ensureRT();
-    if(!rt||!rt.user||!rt.db){instMsg('Instructor login only works from the claude.ai course link. Open the course there and try again.',true);return}
+    if(!rt){instMsg("Instructor login isn't connected for this copy of the course.",true);return}
     let ok=false;
-    if(await rt.user.canEdit()){
+    if(rt.api){
+      const r=await api('login',{email,password:pw});
+      if(r&&r.ok&&r.token){ok=true;D.token=r.token}
+      else if(r&&r.error==='locked'){instMsg('Too many attempts. Try again in '+(r.wait||60)+' seconds.',true);$('#iPass').value='';return}
+    }else if(rt.user&&rt.db&&await rt.user.canEdit()){
       const s=await rt.db.doc('config/instructor').get(),c=s.exists?s.data():null;
       if(c&&c.salt&&c.hash)ok=sameStr(await pbkdf2(pw,c.salt,c.iter||210000),c.hash)&&String(c.email||'').toLowerCase()===email;
     }else await new Promise(r=>setTimeout(r,700));
@@ -1733,6 +1762,11 @@ $('#pwForm').onsubmit=async e=>{
   if(nw.length<10)return say(false,'Use at least 10 characters for the new password.');
   if(nw!==cf)return say(false,"The new passwords don't match.");
   try{
+    if(RT&&RT.api){
+      const r=await api('password',{token:D.token,current:cur,next:nw});
+      if(r&&r.ok){$('#pwForm').reset();return say(true,'Password changed. Use the new one next time you log in.')}
+      return say(false,r&&r.error==='wrong_password'?'Current password is incorrect.':r&&r.error==='expired'?'Your session has ended. Log out and log in again.':"Couldn't change the password. Try again.");
+    }
     const ref=RT.db.doc('config/instructor'),s=await ref.get(),c=s.exists?s.data():null;
     if(!c||!sameStr(await pbkdf2(cur,c.salt,c.iter||210000),c.hash))return say(false,'Current password is incorrect.');
     const salt=b64(crypto.getRandomValues(new Uint8Array(16))),iter=210000;
@@ -1745,13 +1779,24 @@ function openInstructor(){
   if(D.unsub)return;
   dashStatus('Loading results…');
   D.timer=setTimeout(()=>{if(!D.loaded)dashStatus("Results can't be reached yet. Press Refresh, or wait for the connection to come back.")},10000);
+  if(RT.api){if(!D.poll){apiRows();D.poll=setInterval(()=>apiRows(true),30000)}return}
   D.unsub=RT.db.collection('results').onSnapshot(snap=>{
     D.rows=flatten(snap);
     if(!snap.metadata.fromCache){D.loaded=true;D.at=new Date();clearTimeout(D.timer)}
     renderDash();
   },e=>{clearTimeout(D.timer);D.loaded=true;D.unsub=null;dashStatus('Live updates stopped ('+((e&&e.code)||'error')+'). Press Refresh to load the latest results.')});
 }
+// Google Sheet results (outside claude.ai); checked again every 30 s while the dashboard is open.
+async function apiRows(quiet){
+  try{
+    const r=await api('list',{token:D.token});
+    if(r&&r.error==='expired'){leaveInstructorMode();enterInstructorMode();instMsg('Your session has ended. Log in again.',true);return false}
+    if(!r||!r.ok)throw r;
+    D.rows=(r.rows||[]).map(x=>Object.assign({id:x.traineeEmail},x));D.loaded=true;D.at=new Date();clearTimeout(D.timer);renderDash();return true;
+  }catch(e){if(!quiet)dashStatus("Results can't be reached right now. Press Refresh to try again.");return false}
+}
 $('#dashRefresh').onclick=async function(){
+  if(RT&&RT.api){this.disabled=true;const ok=await apiRows();this.disabled=false;if(ok)toast('Results refreshed','refresh');return}
   if(!RT||!RT.db)return;this.disabled=true;
   try{const s=await RT.db.collection('results').get();D.rows=flatten(s);D.loaded=true;D.at=new Date();clearTimeout(D.timer);renderDash();toast('Results refreshed','refresh')}
   catch(e){toast("Couldn't refresh results"+(e&&e.code?' ('+e.code+')':''),'alert')}
@@ -1791,7 +1836,7 @@ function renderDash(){
   const rows=all.filter(r=>(D.filter==='all'||r.status===D.filter)&&(!q||r.name.toLowerCase().includes(q)||r.email.toLowerCase().includes(q)));
   rows.sort((a,b)=>{let x=a[key],y=b[key];if(key==='name'){x=x.toLowerCase();y=y.toLowerCase()}if(x==null)return 1;if(y==null)return -1;return (x>y?1:x<y?-1:0)*dir});
   const tbl=$('#dashTable');
-  if(!n){tbl.innerHTML=`<div class="empty-state"><span class="tile t-blue">${ic('user')}</span><span>Nobody has signed in yet. Share the course with your team at <b>Contributor</b> access. Each trainee appears here as soon as they sign in, and their final results arrive when they press <b>Submit my results</b>.</span></div>`;}
+  if(!n){tbl.innerHTML=`<div class="empty-state"><span class="tile t-blue">${ic('user')}</span><span>Nobody has signed in yet. ${RT&&RT.api?'Share the course link with your team.':'Share the course with your team at <b>Contributor</b> access.'} Each trainee appears here as soon as they sign in, and their final results arrive when they press <b>Submit my results</b>.</span></div>`;}
   else if(!rows.length){tbl.innerHTML=`<div class="empty-state">No trainees match this search or filter.</div>`}
   else{
     tbl.innerHTML=`<div class="tlist"><div class="thead"><span>Trainee</span><span>Lessons</span><span>Points</span><span>Attempts</span><span>Best score</span><span>Status</span><span>Submitted</span><span>Last active</span></div>${rows.map((r,i)=>{
@@ -1822,7 +1867,6 @@ $('#exportBtn').onclick=async function(){
   const lbl=$('span',this);this.disabled=true;lbl.textContent='Preparing…';
   try{
     const dl=window.claude&&claude.use?await claude.use('downloads'):null;
-    if(!dl){toast('Export is only available when the course is open on claude.ai','alert');return}
     const X=await loadXLSX(),all=people();
     const stTxt={passed:'Passed',failed:'Not passed yet',none:'In progress'};
     const t1=[['Name','Email','Status','Submitted on','Lessons completed','Lessons total','Points','Attempts','Best score (/10)','Last score (/10)','Passed on','Course finished on','Started','Last active']]
@@ -1835,7 +1879,9 @@ $('#exportBtn').onclick=async function(){
     [[t1,'Trainees',[24,30,16,17,10,10,8,9,10,10,17,17,17,17]],[t2,'Attempts',[24,30,8,7,7,12,17].concat(QUIZ.map(()=>9))],[t3,'Questions',[10,70,9,9,10]],[t4,'Lessons',[8,24,13,10,12]]].forEach(([d,name,w])=>{const ws=X.utils.aoa_to_sheet(d);ws['!cols']=w.map(wch=>({wch}));ws['!autofilter']={ref:ws['!ref']};X.utils.book_append_sheet(wb,ws,name)});
     const buf=X.write(wb,{bookType:'xlsx',type:'array'});
     const d=new Date(),p=n=>String(n).padStart(2,'0');
-    await dl.save({filename:`verify-course-results-${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.xlsx`,data:new Blob([buf])});
+    const fname=`verify-course-results-${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.xlsx`;
+    if(dl)await dl.save({filename:fname,data:new Blob([buf])});
+    else{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
     toast('Results exported','check');
   }catch(e){
     const code=e&&e.code;
@@ -1868,14 +1914,23 @@ $('#signinForm').onsubmit=e=>{
   if(name.length<2)msg='Enter your full name.';
   else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))msg='Enter a valid email address, like name@company.com.';
   if(msg){err.hidden=false;err.innerHTML=ic('alert')+'<span></span>';$('span',err).textContent=msg;restart(err);return}
-  const same=!!S.trainee&&S.trainee.email===email;
-  if(!same){S=loadState({name,email});resetQuiz()}
-  S.trainee={name:name.slice(0,80),email:email.slice(0,120)};
-  if(!S.name)S.name=S.trainee.name;
-  save();applyState();show(same?cur:0);toast('Welcome, '+name.split(' ')[0]+'!','check');
+  const t={name:name.slice(0,80),email:email.slice(0,120)};
+  if(!S.trainee||S.trainee.email!==email){
+    // A different person: reload so every activity starts from that person's own progress, not the last person's screen.
+    S=loadState(t);if(!S.name)S.name=t.name;store();
+    try{sessionStorage.setItem(KEY+':hello',t.name.split(' ')[0])}catch(e){}
+    try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+    location.reload();return;
+  }
+  S.trainee=t;if(!S.name)S.name=t.name;
+  save();applyState();show(cur);toast('Welcome back, '+escH(name.split(' ')[0])+'!','check');
   pullTrainee();
 };
-$('#signoutBtn').onclick=()=>{try{localStorage.removeItem(KEY+':current')}catch(e){}S=DEF();resetQuiz();applyState();showSignin();toast('Signed out','check')};
+$('#signoutBtn').onclick=()=>{
+  try{localStorage.removeItem(KEY+':current');sessionStorage.setItem(KEY+':bye','1')}catch(e){}
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+  location.reload();
+};
 $('#whoBtn').onclick=showSignin;
 
 /* ---------- boot ---------- */
@@ -1883,7 +1938,12 @@ const INST=location.hash==='#instructor';
 applyState();
 if(INST)enterInstructorMode();
 else if(!S.trainee)showSignin();
-else{const h=lessons.findIndex(l=>'#'+l.id===location.hash);show(h>=0?h:0)}
+else{const h=lessons.findIndex(l=>l.id===S.at);show(h>=0?h:0)}
+try{
+  const hi=sessionStorage.getItem(KEY+':hello'),bye=sessionStorage.getItem(KEY+':bye');
+  sessionStorage.removeItem(KEY+':hello');sessionStorage.removeItem(KEY+':bye');
+  if(hi&&S.trainee)toast((S.at&&S.at!==lessons[0].id?'Welcome back, ':'Welcome, ')+escH(hi)+'!','check');else if(bye)toast('Signed out','check');
+}catch(e){}
 initRuntime();
 })();
 </script>
